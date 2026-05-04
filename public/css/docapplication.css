@@ -1,0 +1,114 @@
+/* Global Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background-image: url(../img/img18.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    backdrop-filter: blur(5px);
+    color: #333;
+}
+
+/* Page Layout */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Heading Style */
+h2 {
+    text-align: center;
+    color: #0056b3;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 40px 0 20px;
+    padding: 0 20px;
+}
+
+/* Form Styling */
+form {
+    width: 50%;
+    background-color: white;
+    border: 1px solid rgb(235, 235, 235);
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Label Styling */
+label {
+    font-size: 16px;
+    color: rgb(44, 44, 44);
+    font-weight: 500;
+    align-self: flex-start;
+    margin: 5px 0 5px 10%;
+}
+
+/* Input Fields */
+input[type="text"], 
+input[type="email"], 
+textarea, 
+input[type="file"] {
+    width: 80%;
+    padding: 7px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+/* Submit Button */
+input[type="submit"] {
+    width: 80%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Error Box */
+.error-box {
+    color: red;
+    font-size: 13px;
+    width: 80%;
+    text-align: left;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    form {
+        width: 90%;
+        padding: 15px;
+    }
+
+    label {
+        margin-left: 5%;
+    }
+
+    input[type="text"], 
+    input[type="email"], 
+    textarea, 
+    input[type="file"], 
+    input[type="submit"],
+    .error-box {
+        width: 90%;
+    }
+}
