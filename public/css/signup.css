@@ -1,6 +1,6 @@
 
 body{
-    margin: 2%;
+    margin: 7%;
     background-color: #F6F7FA;
     background-image: url(../img/img18.png);
     background-repeat: no-repeat;
@@ -29,6 +29,14 @@ td{
     font-size: 30px;
     letter-spacing: -1px;
     margin-bottom: 10px;
+}
+.input-text{
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
 .sub-text{

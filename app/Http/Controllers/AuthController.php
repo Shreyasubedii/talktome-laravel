@@ -78,7 +78,15 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:webuser,email',
-            'password' => 'required|min:6',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[A-Z]/',      
+                'regex:/[a-z]/',      
+                'regex:/[0-9]/',      
+                'regex:/[@$!%*?&]/'   
+            ],
             'name' => 'required',
             'address' => 'required',
             'dob' => 'required|date',

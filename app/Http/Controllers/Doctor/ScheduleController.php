@@ -16,7 +16,7 @@ class ScheduleController extends Controller
         $today = date('Y-m-d');
         return view('doctor.schedules', compact('schedules', 'today', 'doctor'));
     }
-    
+     
     public function store(Request $request)
     {
         $doctor = Auth::guard('doctor')->user();
