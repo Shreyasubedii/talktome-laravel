@@ -20,11 +20,16 @@ use App\Http\Controllers\Patient\RecommendationController;
 use App\Http\Controllers\Patient\ScheduleController as PatientScheduleController;
 use App\Http\Controllers\Patient\PaymentController;
 use App\Http\Controllers\Patient\SettingsController as PatientSettingsController;
+use App\Http\Controllers\Patient\DayLogController as DayLogController;
 
 // Public routes
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('welcome');
 });
+
+Route::get('/welcome', function () {
+    return view('welcome');
+})->name('welcome');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -64,6 +69,12 @@ Route::prefix('patient')->name('patient.')->middleware(['multi.auth'])->group(fu
     Route::get('/dashboard', [PatientDashboardController::class, 'index'])->name('dashboard');
     Route::get('/doctors', [DoctorsController::class, 'index'])->name('doctors');
     Route::get('/schedules', [PatientScheduleController::class, 'index'])->name('schedules');
+    // Route::get('/schedules', [PatientScheduleController::class, 'index'])->name('patient.recommendation');
+
+    // Route::get('/individualsessions', [PatientScheduleController::class, 'individualSessions'])
+    // ->name('individual.sessions');
+    // Route::get('/individualsessions', [IndividualSessionController::class, 'index'])
+    // ->name('individual.sessions');
     Route::get('/booking/{doctorId}', [BookingController::class, 'index'])->name('booking');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/complete/{id}', [BookingController::class, 'complete'])->name('booking.complete');
@@ -77,4 +88,12 @@ Route::prefix('patient')->name('patient.')->middleware(['multi.auth'])->group(fu
     Route::get('/settings', [PatientSettingsController::class, 'index'])->name('settings');
     Route::put('/settings', [PatientSettingsController::class, 'update'])->name('settings.update');
     Route::delete('/settings', [PatientSettingsController::class, 'destroy'])->name('settings.destroy');
+    Route::get('/daylog', [DayLogController::class, 'index'])
+    ->name('daylog');
+    Route::get('/patient/recommendation', function () {
+    return view('patient.recommendation');
+})->name('patient.recommendation');
+
+Route::post('/daylog', [DayLogController::class, 'store'])
+    ->name('daylog.store');
 });

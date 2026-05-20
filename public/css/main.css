@@ -339,10 +339,16 @@ input[type=search]:focus {
 }
 
 
-.menu-active{
+/* .menu-active{
   color: var(--primarycolor);
   border-right: 7px solid var(--primarycolor);
-  background-color: var();
+  background-color: transparent;
+} */
+
+.menu-btn.menu-active{
+  color: var(--primarycolor);
+  border-right: 7px solid var(--primarycolor);
+  background-color: transparent;
 }
 
 .menu-btn:hover{
@@ -390,6 +396,9 @@ input[type=search]:focus {
 .menu-icon-session{
   background-image: url('../img/icons/session.svg');
 }
+.menu-icon-individual-session{
+  background-image: url('../img/icons/individual-session.svg');
+}
 .menu-icon-home{
   background-image: url('../img/icons/home.svg');
 }
@@ -433,6 +442,10 @@ input[type=search]:focus {
   color: var(--primarycolor);
   
   background-image: url('../img/icons/session-iceblue.svg');
+}
+.menu-icon-individual-session:hover, .menu-icon-individual-session-active {
+  color: var(--primarycolor);
+  background-image: url('../img/icons/individual-session-iceblue.svg');
 }
 .menu-icon-home:hover,.menu-icon-home-active{
   color: var(--primarycolor);
@@ -541,7 +554,7 @@ input[type=search]:focus {
 
 
 .doctor-header{
-  background-image: url(../img/img4.jpg);
+  background-image: url(../img/doc.JPG);
   color: rgba(0, 0, 0, 0.87);
   background-size: 100%;
   background-repeat: no-repeat;
@@ -550,7 +563,7 @@ input[type=search]:focus {
 }
 
 .patient-header{
-  background-image: url(../img/img4.jpg);
+  background-image: url(../img/img-wallp.png);
 }
 
 .search-items{

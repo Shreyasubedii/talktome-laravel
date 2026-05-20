@@ -3,7 +3,7 @@
 @section('title', 'Patients')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<link rel="stylesheet" href="{{ asset('css/doctor.css') }}">
 @endsection
 
 @section('content')
@@ -18,15 +18,18 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Auth::guard('admin')->user()->aname ?? 'Administrator' }}</p>
-                                <p class="profile-subtitle">{{ Auth::guard('admin')->user()->aemail ?? 'admin@ttm.com' }}</p>
+                                <p class="profile-title">{{ Auth::guard('admin')->user()->aname ?? 'Administrator' }}
+                                </p>
+                                <p class="profile-subtitle">
+                                    {{ Auth::guard('admin')->user()->aemail ?? 'admin@ttm.com' }}</p>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="logout-btn btn-primary-soft btn" style="width: 100%;">Log out</button>
+                                    <button type="submit" class="logout-btn btn-primary-soft btn"
+                                        style="width: 100%;">Log out</button>
                                 </form>
                             </td>
                         </tr>
@@ -34,8 +37,10 @@
                 </td>
             </tr>
             <tr class="menu-row">
-                <td class="menu-btn menu-icon-dashbord {{ Route::is('admin.dashboard') ? 'menu-active menu-icon-dashbord-active' : '' }}">
-                    <a href="{{ route('admin.dashboard') }}" class="non-style-link-menu {{ Route::is('admin.dashboard') ? 'non-style-link-menu-active' : '' }}">
+                <td
+                    class="menu-btn menu-icon-dashbord {{ Route::is('admin.dashboard') ? 'menu-active menu-icon-dashbord-active' : '' }}">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="non-style-link-menu {{ Route::is('admin.dashboard') ? 'non-style-link-menu-active' : '' }}">
                         <div>
                             <p class="menu-text">Dashboard</p>
                         </div>
@@ -43,8 +48,10 @@
                 </td>
             </tr>
             <tr class="menu-row">
-                <td class="menu-btn menu-icon-doctor {{ Route::is('admin.doctors') ? 'menu-active menu-icon-doctor-active' : '' }}">
-                    <a href="{{ route('admin.doctors') }}" class="non-style-link-menu {{ Route::is('admin.doctors') ? 'non-style-link-menu-active' : '' }}">
+                <td
+                    class="menu-btn menu-icon-doctor {{ Route::is('admin.doctors') ? 'menu-active menu-icon-doctor-active' : '' }}">
+                    <a href="{{ route('admin.doctors') }}"
+                        class="non-style-link-menu {{ Route::is('admin.doctors') ? 'non-style-link-menu-active' : '' }}">
                         <div>
                             <p class="menu-text">Doctors</p>
                         </div>
@@ -52,8 +59,10 @@
                 </td>
             </tr>
             <tr class="menu-row">
-                <td class="menu-btn menu-icon-schedule {{ Route::is('admin.schedules') ? 'menu-active menu-icon-schedule-active' : '' }}">
-                    <a href="{{ route('admin.schedules') }}" class="non-style-link-menu {{ Route::is('admin.schedules') ? 'non-style-link-menu-active' : '' }}">
+                <td
+                    class="menu-btn menu-icon-schedule {{ Route::is('admin.schedules') ? 'menu-active menu-icon-schedule-active' : '' }}">
+                    <a href="{{ route('admin.schedules') }}"
+                        class="non-style-link-menu {{ Route::is('admin.schedules') ? 'non-style-link-menu-active' : '' }}">
                         <div>
                             <p class="menu-text">Schedule</p>
                         </div>
@@ -61,8 +70,10 @@
                 </td>
             </tr>
             <tr class="menu-row">
-                <td class="menu-btn menu-icon-appoinment {{ Route::is('admin.appointments') ? 'menu-active menu-icon-appoinment-active' : '' }}">
-                    <a href="{{ route('admin.appointments') }}" class="non-style-link-menu {{ Route::is('admin.appointments') ? 'non-style-link-menu-active' : '' }}">
+                <td
+                    class="menu-btn menu-icon-appoinment {{ Route::is('admin.appointments') ? 'menu-active menu-icon-appoinment-active' : '' }}">
+                    <a href="{{ route('admin.appointments') }}"
+                        class="non-style-link-menu {{ Route::is('admin.appointments') ? 'non-style-link-menu-active' : '' }}">
                         <div>
                             <p class="menu-text">Appointment</p>
                         </div>
@@ -70,8 +81,10 @@
                 </td>
             </tr>
             <tr class="menu-row">
-                <td class="menu-btn menu-icon-patient {{ Route::is('admin.patients') ? 'menu-active menu-icon-patient-active' : '' }}">
-                    <a href="{{ route('admin.patients') }}" class="non-style-link-menu {{ Route::is('admin.patients') ? 'non-style-link-menu-active' : '' }}">
+                <td
+                    class="menu-btn menu-icon-patient {{ Route::is('admin.patients') ? 'menu-active menu-icon-patient-active' : '' }}">
+                    <a href="{{ route('admin.patients') }}"
+                        class="non-style-link-menu {{ Route::is('admin.patients') ? 'non-style-link-menu-active' : '' }}">
                         <div>
                             <p class="menu-text">Patients</p>
                         </div>
@@ -93,12 +106,13 @@
                 <td>
                     <form action="{{ route('admin.patients') }}" method="get" class="header-search">
                         <input type="search" name="search" class="input-text header-searchbar"
-                            placeholder="Search Patient name or Email" list="patient" value="{{ request('search') }}">&nbsp;&nbsp;
+                            placeholder="Search Patient name or Email" list="patient"
+                            value="{{ request('search') }}">&nbsp;&nbsp;
                         <datalist id="patient">
                             @foreach($allPatients as $p)
                             <option value="{{ $p->pname }}">
                             <option value="{{ $p->pemail }}">
-                            @endforeach
+                                @endforeach
                         </datalist>
                         <input type="Submit" value="Search" class="login-btn btn-primary btn"
                             style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
@@ -120,7 +134,8 @@
 
             <tr>
                 <td colspan="4" style="padding-top:10px;">
-                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Patients ({{ $patients->count() }})</p>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All
+                        Patients ({{ $patients->count() }})</p>
                 </td>
             </tr>
 
@@ -147,7 +162,10 @@
                                         <td>{{ Str::limit($patient->pdob, 10) }}</td>
                                         <td>
                                             <div style="display:flex;justify-content: center;">
-                                                <button class="btn-primary-soft btn button-icon btn-view" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button>
+                                                <button class="btn-primary-soft btn button-icon btn-view"
+                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                                                    <font class="tn-in-text">View</font>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -157,8 +175,13 @@
                                             <center>
                                                 <br><br><br><br>
                                                 <img src="{{ asset('img/notfound.svg') }}" width="25%">
-                                                <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn't find anything!</p>
-                                                <a class="non-style-link" href="{{ route('admin.patients') }}"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Patients &nbsp;</button></a>
+                                                <p class="heading-main12"
+                                                    style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We
+                                                    couldn't find anything!</p>
+                                                <a class="non-style-link" href="{{ route('admin.patients') }}"><button
+                                                        class="login-btn btn-primary-soft btn"
+                                                        style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp;
+                                                        Show all Patients &nbsp;</button></a>
                                             </center>
                                             <br><br><br><br>
                                         </td>

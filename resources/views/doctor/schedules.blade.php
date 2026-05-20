@@ -5,7 +5,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
 <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<link rel="stylesheet" href="{{ asset('css/doctor.css') }}">
 <style>
 .popup {
     animation: transitionIn-Y-bottom 0.5s;

@@ -37,4 +37,9 @@ class ScheduleController extends Controller
         
         return view('patient.schedules', compact('schedules', 'today', 'patient', 'search'));
     }
+//     public function individualSessions()
+// {
+//     return view('patient.individualsessions',compact('schedules', 'today', 'patient', 'search'));
+// }
+// 
 }
