@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 <link rel="stylesheet" href="{{ asset('css/patient.css') }}">
 <style>
-.popup {
+/* .popup {
     animation: transitionIn-Y-bottom 0.5s;
 }
 
@@ -18,6 +18,76 @@
 
 .setting-tabs:hover {
     background-color: #f0f0f0;
+} */
+
+/* //new updated css */
+.popup {
+    animation: transitionIn-Y-bottom 0.4s ease;
+    transform-origin: center;
+}
+
+/* softer card feel */
+.setting-tabs {
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-radius: 14px;
+}
+
+.setting-tabs:hover {
+    background-color: #f8f9fb;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* active click feedback */
+.setting-tabs:active {
+    transform: scale(0.98);
+}
+
+/* overlay improvement */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    backdrop-filter: blur(4px);
+}
+
+/* popup refinement */
+.popup {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+/* close button nicer */
+.close {
+    float: right;
+    font-size: 22px;
+    text-decoration: none;
+    color: #666;
+    transition: 0.2s;
+}
+
+.close:hover {
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.h1-dashboard {
+    letter-spacing: 0.2px;
+    font-weight: 600;
+}
+
+.h3-dashboard {
+    opacity: 0.8;
+    line-height: 1.4;
 }
 </style>
 @endsection
@@ -72,7 +142,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">Group Sessions</p>
+                            <p class="menu-text"> Sessions</p>
                         </div>
                     </a>
                 </td>
@@ -128,7 +198,7 @@
                 <td width="15%">
                     <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's
                         Date</p>
-                    <p class="heading-sub12" style="padding: 0;margin: 0;">{{ $today }}</p>
+                    <p class="heading-sub12" style="padding: 0;margin: 0; text-align:right;">{{ $today }}</p>
                 </td>
                 <td width="10%">
                     <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img
@@ -155,7 +225,7 @@
                                         <div>
                                             <div class="h1-dashboard">Account Settings &nbsp;</div><br>
                                             <div class="h3-dashboard" style="font-size: 15px;">Edit your Account Details
-                                                & Change Password</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -280,10 +350,10 @@
                         <td class="label-td"><label class="form-label">Email: </label></td>
                         <td>{{ $patient->pemail }}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td class="label-td"><label class="form-label">NIC: </label></td>
                         <td>{{ $patient->pnic }}</td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td class="label-td"><label class="form-label">Telephone: </label></td>
                         <td>{{ $patient->ptel }}</td>
@@ -329,5 +399,43 @@
         </center>
     </div>
 </div>
+<script>
+function openPopup(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.style.display = "flex";
+    setTimeout(() => {
+        el.style.opacity = "1";
+    }, 10);
+}
+
+function closePopup(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.style.opacity = "0";
+    setTimeout(() => {
+        el.style.display = "none";
+    }, 200);
+}
+
+// ESC key closes any open popup
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Escape") {
+        document.querySelectorAll('.overlay').forEach(p => {
+            p.style.display = "none";
+        });
+    }
+});
+
+// click outside popup closes it
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('overlay')) {
+        e.target.style.display = "none";
+    }
+});
+</script>
 @endif
+
 @endsection

@@ -58,7 +58,7 @@
                 <td class="menu-btn menu-icon-doctor menu-active menu-icon-doctor-active">
                     <a href="{{ route('patient.doctors') }}" class="non-style-link-menu non-style-link-menu-active">
                         <div>
-                            <p class="menu-text">All Doctors</p>
+                            <p class="menu-text">All Therapists </p>
                         </div>
                     </a>
                 </td>
@@ -67,7 +67,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">Group Sessions</p>
+                            <p class="menu-text"> Sessions</p>
                         </div>
                     </a>
                 </td>
@@ -127,7 +127,7 @@
                 <td width="15%">
                     <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's
                         Date</p>
-                    <p class="heading-sub12" style="padding: 0;margin: 0;">{{ $today }}</p>
+                    <p class="heading-sub12" style="padding: 0;margin: 0; text-align:right;">{{ $today }}</p>
                 </td>
                 <td width="10%">
                     <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img
@@ -149,7 +149,7 @@
                             <table width="93%" class="sub-table scrolldown" border="0">
                                 <thead>
                                     <tr>
-                                        <th class="table-headin">Doctor Name</th>
+                                        <th class="table-headin">Therapist Name</th>
                                         <th class="table-headin">Email</th>
                                         <th class="table-headin">Specialties</th>
                                         <th class="table-headin">Events</th>

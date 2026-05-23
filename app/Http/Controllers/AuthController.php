@@ -84,14 +84,55 @@ class AuthController extends Controller
                 'min:8',
                 'regex:/[A-Z]/',      
                 'regex:/[a-z]/',      
-                'regex:/[0-9]/',      
-                'regex:/[@$!%*?&]/'   
+                'regex:/[0-9]/',   
+                  'regex:/[@$!%*?&.#]/'       
             ],
-            'name' => 'required',
-            'address' => 'required',
-            'dob' => 'required|date',
-            'tel' => 'required'
-        ]);
+            'name' => [
+    'required',
+    'string',
+    'max:255',
+    'regex:/^[A-Za-z\s]+$/'
+],
+            'address' => 'required|string|max:255',
+           'dob' => [
+    'required',
+    'date',
+    'before_or_equal:' . now()->subYears(18)->format('Y-m-d')
+],
+           'tel' => [
+    'required',
+    'regex:/^(98|97)[0-9]{8}$/'
+]
+
+
+            
+        ],
+        
+         [
+
+        // PASSWORD MESSAGES
+        'password.min' =>
+            'Password must be at least 8 characters long.',
+
+        'password.regex' =>
+            'Password must contain at least one number, capital letter, small letter and one special character.',
+
+        // DOB MESSAGE
+        'dob.before_or_equal' =>
+            'You must be at least 18 years old to register.',
+
+        // EMAIL
+        'email.unique' =>
+            'This email is already registered.',
+
+        // NAME
+            'name.regex' => 'Name should contain only letters and spaces. Numbers and special characters are not allowed.',
+
+    ]
+        
+        
+        );
+        
         
         // Create patient
         $patient = Patient::create([

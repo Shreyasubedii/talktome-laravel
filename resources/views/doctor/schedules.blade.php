@@ -204,11 +204,13 @@
                                         <td colspan="4">
                                             <br><br><br><br>
                                             <center>
-                                                <img src="{{ asset('img/notfound.svg') }}" width="25%">
+                                                <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                                                 <br>
                                                 <p class="heading-main12"
-                                                    style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We
-                                                    couldn't find anything!</p>
+                                                    style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Looks
+                                                    like there are no sessions
+                                                    for now !
+                                                </p>
                                             </center>
                                             <br><br><br><br>
                                         </td>

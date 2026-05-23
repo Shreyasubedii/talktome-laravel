@@ -34,8 +34,8 @@ td.label-td {
 .toggle-password {
     position: absolute;
     right: 15px;
-    top: 55%;
-    transform: translateY(-50%);
+    top: 35px;
+    transform: translateY(-60%);
     cursor: pointer;
     font-size: 13px;
     color: #666;
@@ -70,7 +70,7 @@ td.label-td {
             <tr>
                 <td>
                     <p class="sub-text">
-                        Join TalkToMe - Online Therapy System
+                        Join TalkToMe - Platform curated for your Mental Wellness.
                     </p>
                 </td>
             </tr>
@@ -116,6 +116,7 @@ td.label-td {
                     <td class="label-td">
                         <label class="form-label">Password</label>
                     </td>
+
                 </tr>
 
                 <tr>
@@ -126,6 +127,15 @@ td.label-td {
                         <span class="toggle-password" onclick="togglePassword()">
                             <i id="eye-icon" class="fa fa-eye"></i>
                         </span>
+                        <small style="
+    color:#777;
+    font-size:12px;
+    display:block;
+    margin-top:6px;
+">
+                            Password must be at least 8 characters long and include at least one number and one special
+                            character.
+                        </small>
 
                         @error('password')
                         <span class="error-text">{{ $message }}</span>

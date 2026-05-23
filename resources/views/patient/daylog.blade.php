@@ -185,13 +185,21 @@
             <tr>
                 <td>
                     <p style="
-                        font-size:23px;
+                        font-size:17px;
                         padding-left:12px;
                         font-weight:600;
                         margin-left:20px;
                     ">
-                        Log Your Day
+                        Log Your Day and stay aware of your emotions and triggers
                     </p>
+                    <!-- <p style="
+                        font: size 19px;
+                        padding-left:12px;
+                        font-weight:400;
+                        margin-left:20px;
+                    ">
+                        This will help you and your therapist understand you better.
+                    </p> -->
                 </td>
 
                 <td width="25%"></td>
@@ -207,7 +215,7 @@
                         Today's Date
                     </p>
 
-                    <p class="heading-sub12" style="padding:0;margin:0;">
+                    <p class="heading-sub12" style="padding:0;margin:0; text-align:right;">
                         {{ $today }}
                     </p>
                 </td>

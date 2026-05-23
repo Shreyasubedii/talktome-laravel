@@ -122,7 +122,7 @@
                 <td width="15%">
                     <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's
                         Date</p>
-                    <p class="heading-sub12" style="padding: 0;margin: 0;">{{ $today }}</p>
+                    <p class="heading-sub12" style="padding: 0;margin: 0; text-align:right;">{{ $today }}</p>
                 </td>
                 <td width="10%">
                     <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img

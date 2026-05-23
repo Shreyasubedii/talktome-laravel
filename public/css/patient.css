@@ -10,15 +10,38 @@ body{
 
 
 }
+/* FIXED SIDEBAR */
 .menu{
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 24%;
+    height: 100vh;
+
+    overflow-y: auto;
+
+    border-right: 1.5px solid rgb(235, 235, 235);
+    box-shadow: 0 0px 0px 2px rgba(240, 240, 240, 0.3);
+
+    background: white;
+    z-index: 1000;
+}
+
+/* MAIN CONTENT */
+/* .menu{
     border-right: 1.5px solid rgb(235, 235, 235);
     width: 24%;
     height: 100%;
     box-shadow: 0 0px 0px 2px rgba(240, 240, 240, 0.3);
-}
+} */
 .dash-body{
+    margin-left: 24%;
     width: 76%;
     height: 100%;
+}
+.dash-body{
+    margin-top: 15px;
 }
 
 .menu-container{
