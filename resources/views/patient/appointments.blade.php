@@ -96,6 +96,21 @@
                 </td>
             </tr>
             <tr class="menu-row">
+                <td class="menu-btn menu-icon-session">
+
+                    <a href="{{ route('patient.journal') }}" class="non-style-link-menu">
+
+                        <div>
+                            <p class="menu-text">
+                                Journal Reflection
+                            </p>
+                        </div>
+
+                    </a>
+
+                </td>
+            </tr>
+            <tr class="menu-row">
                 <td class="menu-btn menu-icon-settings">
                     <a href="{{ route('patient.settings') }}" class="non-style-link-menu">
                         <div>
@@ -191,7 +206,7 @@
                                         <td colspan="3">
                                             <br><br><br><br>
                                             <center>
-                                                <img src="{{ asset('img/notfound.svg') }}" width="25%">
+                                                <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                                                 <br>
                                                 <p class="heading-main12"
                                                     style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">You

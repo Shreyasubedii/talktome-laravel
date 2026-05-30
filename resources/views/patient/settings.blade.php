@@ -171,6 +171,21 @@
                 </td>
             </tr>
             <tr class="menu-row">
+                <td class="menu-btn menu-icon-session">
+
+                    <a href="{{ route('patient.journal') }}" class="non-style-link-menu">
+
+                        <div>
+                            <p class="menu-text">
+                                Journal Reflection
+                            </p>
+                        </div>
+
+                    </a>
+
+                </td>
+            </tr>
+            <tr class="menu-row">
                 <td class="menu-btn menu-icon-settings menu-active menu-icon-settings-active">
                     <a href="{{ route('patient.settings') }}" class="non-style-link-menu non-style-link-menu-active">
                         <div>

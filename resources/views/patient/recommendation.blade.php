@@ -138,7 +138,7 @@
                                 <td colspan="2">
                                     <p class="heading-main12">Find Your Specialist</p>
                                     <p class="heading-sub12">Describe your symptoms or problem below, and we'll
-                                        recommend the best doctors for you.</p>
+                                        recommend the best professional for you.</p>
                                     <br>
                                     <form method="POST" action="{{ route('patient.recommendation') }}">
                                         @csrf
@@ -191,17 +191,34 @@
                     </center>
                 </td>
             </tr>
+
+
             @elseif(isset($problem))
             <tr>
                 <td colspan="4">
                     <center>
+
+                        @if(isset($fallback) && $fallback)
+
+                        <div style="margin-bottom:20px;padding:15px;background:#fff3cd;border-radius:10px;width:70%;">
+                            <strong>We couldn’t understand your input clearly.</strong><br>
+                            Showing general therapists you can consider.
+                        </div>
+
+                        @else
+
                         <img src="{{ asset('img/notfound.svg') }}" width="25%">
-                        <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">No specific matches
-                            found. Try different keywords or browse all doctors.</p>
+                        <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">
+                            No specific matches found. Try different keywords or browse all doctors.
+                        </p>
+
+                        @endif
+
                     </center>
                 </td>
             </tr>
             @endif
+
         </table>
     </div>
 </div>

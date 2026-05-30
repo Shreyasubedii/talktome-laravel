@@ -108,6 +108,21 @@
                 </td>
             </tr>
             <tr class="menu-row">
+                <td class="menu-btn menu-icon-session">
+
+                    <a href="{{ route('patient.journal') }}" class="non-style-link-menu">
+
+                        <div>
+                            <p class="menu-text">
+                                Journal Reflection
+                            </p>
+                        </div>
+
+                    </a>
+
+                </td>
+            </tr>
+            <tr class="menu-row">
                 <td
                     class="menu-btn menu-icon-settings {{ Route::is('patient.settings') ? 'menu-active menu-icon-settings-active' : '' }}">
                     <a href="{{ route('patient.settings') }}"
@@ -272,7 +287,7 @@
                                                     <td colspan="4">
                                                         <br><br>
                                                         <center>
-                                                            <img src="{{ asset('img/nothingfound.svg') }}" width="25%">
+                                                            <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                                                             <p class="heading-main12"
                                                                 style="font-size:20px;color:rgb(49, 49, 49)">Nothing to
                                                                 show!</p>

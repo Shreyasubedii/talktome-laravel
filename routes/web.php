@@ -21,6 +21,7 @@ use App\Http\Controllers\Patient\ScheduleController as PatientScheduleController
 use App\Http\Controllers\Patient\PaymentController;
 use App\Http\Controllers\Patient\SettingsController as PatientSettingsController;
 use App\Http\Controllers\Patient\DayLogController as DayLogController;
+use App\Http\Controllers\Patient\JournalController;
 
 // Public routes
 Route::get('/', function () {
@@ -30,6 +31,16 @@ Route::get('/', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 })->name('welcome');
+
+Route::get(
+    '/patient/journal',
+    [JournalController::class,'index']
+)->name('patient.journal');
+
+Route::post(
+    '/patient/journal/store',
+    [JournalController::class,'store']
+)->name('patient.journal.store');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -96,4 +107,8 @@ Route::prefix('patient')->name('patient.')->middleware(['multi.auth'])->group(fu
 
 Route::post('/daylog', [DayLogController::class, 'store'])
     ->name('daylog.store');
+    Route::delete(
+    '/patient/journal/{id}',
+    [JournalController::class,'destroy']
+)->name('patient.journal.destroy');
 });

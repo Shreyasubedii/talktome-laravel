@@ -4,6 +4,107 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<style>
+.analytics-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 25px 25px;
+    background: linear-gradient(145deg, #ffffff, #f8fbff);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    box-shadow:
+        0 10px 30px rgba(30, 90, 150, 0.08),
+        0 2px 10px rgba(0, 0, 0, 0.03);
+
+    transition: all .35s ease;
+}
+
+.analytics-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 18px 40px rgba(30, 90, 150, 0.14),
+        0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.analytics-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+
+    width: 120px;
+    height: 120px;
+
+    background: radial-gradient(rgba(124, 168, 198, 0.18),
+            transparent 70%);
+
+    border-radius: 50%;
+}
+
+.analytics-title {
+    font-size: 15px;
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+.analytics-number {
+    font-size: 38px;
+    font-weight: 800;
+    color: #123;
+    margin-top: 10px;
+}
+
+.dashboard-glow {
+    position: relative;
+}
+
+.dashboard-glow::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    border-radius: 24px;
+
+    background: linear-gradient(135deg,
+            rgba(124, 168, 198, 0.08),
+            transparent);
+
+    pointer-events: none;
+}
+
+.analytics-progress {
+    height: 8px;
+    border-radius: 20px;
+    background: #edf2f7;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.analytics-progress span {
+    display: block;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #7ca8c6, #5b8db0);
+}
+
+.fade-slide {
+    animation: fadeSlide .7s ease;
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 @endsection
 
 @section('content')
@@ -53,7 +154,7 @@
                     <a href="{{ route('admin.doctors') }}"
                         class="non-style-link-menu {{ Route::is('admin.doctors') ? 'non-style-link-menu-active' : '' }}">
                         <div>
-                            <p class="menu-text">Doctors</p>
+                            <p class="menu-text">Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -137,7 +238,7 @@
                                         style="padding:20px;margin:auto;width:95%;display: flex">
                                         <div>
                                             <div class="h1-dashboard">{{ $doctorsCount }}</div><br>
-                                            <div class="h3-dashboard">Doctors &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="h3-dashboard">Therapists &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             </div>
                                         </div>
                                         <div class="btn-icon-back dashboard-icons"
@@ -211,7 +312,7 @@
                                 <p
                                     style="padding-bottom:19px;text-align:right;padding-right:50px;font-size:15px;font-weight:500;color:#212529e3;line-height: 20px;">
                                     Here's Quick access to Upcoming Sessions that Scheduled until 7 days<br>
-                                    Add, Remove and Many features available in @Schedule section.
+
                                 </p>
                             </td>
                         </tr>
@@ -226,7 +327,7 @@
                                                         number
                                                     </th>
                                                     <th class="table-headin">Patient name</th>
-                                                    <th class="table-headin">Doctor</th>
+                                                    <th class="table-headin">Therapist</th>
                                                     <th class="table-headin">Session</th>
                                                 </tr>
                                             </thead>
@@ -249,7 +350,7 @@
                                                     <td colspan="4">
                                                         <center>
                                                             <br><br><br><br>
-                                                            <img src="{{ asset('img/notfound.svg') }}" width="25%">
+                                                            <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                                                             <p class="heading-main12"
                                                                 style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">
                                                                 Nothing to show!</p>
@@ -270,7 +371,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="table-headin">Session Title</th>
-                                                    <th class="table-headin">Doctor</th>
+                                                    <th class="table-headin">Therapist</th>
                                                     <th class="table-headin">Scheduled Date & Time</th>
                                                 </tr>
                                             </thead>
@@ -290,7 +391,7 @@
                                                     <td colspan="3">
                                                         <center>
                                                             <br><br><br><br>
-                                                            <img src="{{ asset('img/notfound.svg') }}" width="25%">
+                                                            <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                                                             <p class="heading-main12"
                                                                 style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">
                                                                 Nothing to show!</p>
@@ -328,476 +429,623 @@
 
         <!-- added feature from here  -->
 
+        <!-- ========================================================= -->
         <!-- ADVANCED ANALYTICS SECTION -->
+        <!-- ========================================================= -->
 
-        <tr>
-            <td colspan="4">
-
-                <table width="100%" border="0" class="dashbord-tables" style="margin-top:20px;">
-
-                    <!-- SECTION TITLE -->
-                    <tr>
-                        <td colspan="3">
-
-                            <div style="
-                        display:flex;
-                        align-items:center;
-                        gap:15px;
-                        padding:20px;
-                    ">
-
-                                <div style="
-                            width:60px;
-                            height:60px;
-                            border-radius:16px;
-                            background:linear-gradient(135deg,#e0f2ff,#f4fbff);
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            box-shadow:0 4px 10px rgba(0,0,0,0.05);
-                        ">
-                                    <img src="{{ asset('img/icons/dashboard.svg') }}" width="30">
-                                </div>
-
-                                <div>
-                                    <h2 style="
-                                margin:0;
-                                color:var(--primarycolor);
-                                font-size:28px;
-                                font-weight:700;
-                            ">
-                                        Advanced Analytics Dashboard
-                                    </h2>
-
-                                    <p style="
-                                margin-top:5px;
-                                color:#6c757d;
-                                font-size:15px;
-                            ">
-                                        Real-time system insights and booking analytics
-                                    </p>
-                                </div>
-
-                            </div>
-
-                        </td>
-                    </tr>
-
-                    <!-- ANALYTICS CARDS -->
-                    <tr>
-
-                        <!-- TOP DOCTORS -->
-                        <td width="33%" style="vertical-align:top;">
-
-                            <div class="dashboard-items" style="
-                        padding:25px;
-                        margin:10px;
-                        border-radius:20px;
-                        min-height:320px;
-                    ">
-
-                                <div style="
-                            display:flex;
-                            align-items:center;
-                            margin-bottom:25px;
-                        ">
-
-                                    <div style="
-                                width:50px;
-                                height:50px;
-                                border-radius:14px;
-                                background:#edf7ff;
-                                display:flex;
-                                justify-content:center;
-                                align-items:center;
-                                margin-right:15px;
-                            ">
-                                        <img src="{{ asset('img/icons/doctors-hover.svg') }}" width="24">
-                                    </div>
-
-                                    <div>
-                                        <h3 style="margin:0;">
-                                            Most Booked Doctors
-                                        </h3>
-
-                                        <p style="
-                                    margin:0;
-                                    color:#777;
-                                    font-size:13px;
-                                ">
-                                            Highest patient engagement
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                @forelse($topDoctors as $doctor)
-
-                                <div style="
-                            display:flex;
-                            justify-content:space-between;
-                            align-items:center;
-                            margin-bottom:16px;
-                            padding-bottom:12px;
-                            border-bottom:1px solid #f1f1f1;
-                        ">
-
-                                    <span style="font-weight:600;">
-                                        {{ $doctor->docname }}
-                                    </span>
-
-                                    <span style="
-                                background:#daf1ff;
-                                color:#0077b6;
-                                padding:6px 12px;
-                                border-radius:12px;
-                                font-weight:700;
-                                font-size:14px;
-                            ">
-                                        {{ $doctor->total_bookings }}
-                                    </span>
-
-                                </div>
-
-                                @empty
-
-                                <p>No doctor analytics available.</p>
-
-                                @endforelse
-
-                            </div>
-
-                        </td>
-
-                        <!-- TOP PATIENTS -->
-                        <td width="33%" style="vertical-align:top;">
-
-                            <div class="dashboard-items" style="
-                        padding:25px;
-                        margin:10px;
-                        border-radius:20px;
-                        min-height:320px;
-                    ">
-
-                                <div style="
-                            display:flex;
-                            align-items:center;
-                            margin-bottom:25px;
-                        ">
-
-                                    <div style="
-                                width:50px;
-                                height:50px;
-                                border-radius:14px;
-                                background:#effff2;
-                                display:flex;
-                                justify-content:center;
-                                align-items:center;
-                                margin-right:15px;
-                            ">
-                                        <img src="{{ asset('img/icons/patients-hover.svg') }}" width="24">
-                                    </div>
-
-                                    <div>
-                                        <h3 style="margin:0;">
-                                            Active Patients
-                                        </h3>
-
-                                        <p style="
-                                    margin:0;
-                                    color:#777;
-                                    font-size:13px;
-                                ">
-                                            Most frequent bookings
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                @forelse($topPatients as $patient)
-
-                                <div style="
-                            display:flex;
-                            justify-content:space-between;
-                            align-items:center;
-                            margin-bottom:16px;
-                            padding-bottom:12px;
-                            border-bottom:1px solid #f1f1f1;
-                        ">
-
-                                    <span style="font-weight:600;">
-                                        {{ $patient->pname }}
-                                    </span>
-
-                                    <span style="
-                                background:#e7ffe9;
-                                color:#2b9348;
-                                padding:6px 12px;
-                                border-radius:12px;
-                                font-weight:700;
-                                font-size:14px;
-                            ">
-                                        {{ $patient->total_appointments }}
-                                    </span>
-
-                                </div>
-
-                                @empty
-
-                                <p>No patient analytics available.</p>
-
-                                @endforelse
-
-                            </div>
-
-                        </td>
-
-                        <!-- SPECIALTIES -->
-                        <td width="33%" style="vertical-align:top;">
-
-                            <div class="dashboard-items" style="
-                        padding:25px;
-                        margin:10px;
-                        border-radius:20px;
-                        min-height:320px;
-                    ">
-
-                                <div style="
-                            display:flex;
-                            align-items:center;
-                            margin-bottom:25px;
-                        ">
-
-                                    <div style="
-                                width:50px;
-                                height:50px;
-                                border-radius:14px;
-                                background:#fff6ea;
-                                display:flex;
-                                justify-content:center;
-                                align-items:center;
-                                margin-right:15px;
-                            ">
-                                        <img src="{{ asset('img/icons/session-iceblue.svg') }}" width="24">
-                                    </div>
-
-                                    <div>
-                                        <h3 style="margin:0;">
-                                            Popular Specialties
-                                        </h3>
-
-                                        <p style="
-                                    margin:0;
-                                    color:#777;
-                                    font-size:13px;
-                                ">
-                                            Most available specialties
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                @forelse($topSpecialties as $specialty)
-
-                                <div style="
-                            display:flex;
-                            justify-content:space-between;
-                            align-items:center;
-                            margin-bottom:16px;
-                            padding-bottom:12px;
-                            border-bottom:1px solid #f1f1f1;
-                        ">
-
-                                    <span style="font-weight:600;">
-                                        {{ $specialty->sname }}
-                                    </span>
-
-                                    <span style="
-                                background:#fff0d6;
-                                color:#bc6c25;
-                                padding:6px 12px;
-                                border-radius:12px;
-                                font-weight:700;
-                                font-size:14px;
-                            ">
-                                        {{ $specialty->total_doctors }}
-                                    </span>
-
-                                </div>
-
-                                @empty
-
-                                <p>No specialty analytics available.</p>
-
-                                @endforelse
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    <!-- APPOINTMENT STATS -->
-                    <tr>
-
-                        <td colspan="2" style="vertical-align:top;">
-
-                            <div class="dashboard-items" style="
-                        padding:30px;
-                        margin:10px;
-                        border-radius:20px;
-                    ">
-
-                                <div style="
-                            display:flex;
-                            align-items:center;
-                            margin-bottom:30px;
-                        ">
-
-                                    <img src="{{ asset('img/icons/book-hover.svg') }}" width="35"
-                                        style="margin-right:15px;">
-
-                                    <div>
-                                        <h2 style="margin:0;">
-                                            Appointment Statistics
-                                        </h2>
-
-                                        <p style="
-                                    margin:0;
-                                    color:#777;
-                                    font-size:14px;
-                                ">
-                                            Weekly and monthly booking overview
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                <div style="
-                            display:flex;
-                            gap:25px;
-                            justify-content:space-between;
-                            flex-wrap:wrap;
-                        ">
-
-                                    <!-- MONTH -->
-                                    <div style="
-                                flex:1;
-                                min-width:220px;
-                                background:#f8fbff;
-                                border-radius:18px;
-                                padding:30px;
-                                text-align:center;
-                            ">
-
-                                        <img src="{{ asset('img/icons/book-hover.svg') }}" width="45"
-                                            style="margin-bottom:15px;">
-
-                                        <div class="h1-dashboard" style="margin-bottom:10px;">
-                                            {{ $monthlyAppointments }}
-                                        </div>
-
-                                        <div class="h2-dashboard" style="margin-top:5px;">
-                                            Monthly Appointments
-                                        </div>
-
-                                    </div>
-
-                                    <!-- WEEK -->
-                                    <div style=" flex:1; min-width:220px; background:#f8fffa; border-radius:18px;
-                                            padding:30px; text-align:center; ">
-
-                                        <img src=" {{ asset('img/icons/session-iceblue.svg') }}" width="45"
-                                            style="margin-bottom:15px;">
-
-                                        <div class="h1-dashboard" style="margin-bottom:10px;">
-                                            {{ $weeklyAppointments }}
-                                        </div>
-
-                                        <div class="h2-dashboard" style="margin-top:5px;">
-                                            Weekly Appointments
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <!-- SYSTEM INSIGHTS -->
-                        <td style="vertical-align:top;">
-
-                            <div class="dashboard-items" style="
-                        padding:30px;
-                        margin:10px;
-                        border-radius:20px;
-                        min-height:280px;
-                    ">
-
-                                <div style="
-                            display:flex;
-                            align-items:center;
-                            margin-bottom:25px;
-                        ">
-
-                                    <img src="{{ asset('img/icons/dashboard.svg') }}" width="35"
-                                        style="margin-right:15px;">
-
-                                    <div>
-                                        <h2 style="margin:0;">
-                                            System Insights
-                                        </h2>
-
-                                        <p style="
-                                    margin:0;
-                                    color:#777;
-                                    font-size:14px;
-                                ">
-                                            Platform performance summary
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                <div style="
-                            background:#f9fbfc;
-                            border-radius:18px;
-                            padding:25px;
-                            line-height:32px;
-                            color:#555;
-                            font-size:16px;
-                        ">
-
-                                    <strong>{{ $doctorsCount }}</strong> doctors are currently active on the
-                                    platform.
-
-                                    <br><br>
-
-                                    <strong>{{ $patientsCount }}</strong> registered patients are using the system.
-
-                                    <br><br>
-
-                                    This month recorded
-                                    <strong>{{ $monthlyAppointments }}</strong>
-                                    successful appointment bookings.
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                </table>
-
-            </td>
-        </tr>
-        <!-- added till here -->
-
-
-    </div>
-</div>
-@endsection
+        <div style="padding:20px 10px 30px 10px;">
+
+            <!-- HEADER -->
+            <div class="analytics-hero fade-slide">
+
+                <div class="analytics-hero-left">
+
+                    <div class="analytics-icon-wrap pulse-soft">
+                        <img src="{{ asset('img/icons/dashboard.svg') }}" width="32">
+                    </div>
+
+                    <div>
+                        <h1 class="analytics-main-title">
+                            Advanced Analytics Dashboard
+                        </h1>
+
+                        <p class="analytics-subtitle">
+                            Real-time insights, platform growth metrics and booking activity overview.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    LIVE DATA
+                </div>
+
+            </div>
+
+            <!-- QUICK INSIGHT STRIP -->
+            <div class="quick-strip fade-slide">
+
+                <div class="quick-strip-card blue-strip">
+                    <p>Total Therapists</p>
+                    <h2 class="counter" data-target="{{ $doctorsCount }}">0</h2>
+
+                    <div class="analytics-progress">
+                        <span style="width:85%"></span>
+                    </div>
+                </div>
+
+                <div class="quick-strip-card green-strip">
+                    <p>Registered Patients</p>
+                    <h2 class="counter" data-target="{{ $patientsCount }}">0</h2>
+
+                    <div class="analytics-progress">
+                        <span style="width:78%"></span>
+                    </div>
+                </div>
+
+                <div class="quick-strip-card orange-strip">
+                    <p>Monthly Bookings</p>
+                    <h2 class="counter" data-target="{{ $monthlyAppointments }}">0</h2>
+
+                    <div class="analytics-progress">
+                        <span style="width:90%"></span>
+                    </div>
+                </div>
+
+                <div class="quick-strip-card purple-strip">
+                    <p>Weekly Sessions</p>
+                    <h2 class="counter" data-target="{{ $weeklyAppointments }}">0</h2>
+
+                    <div class="analytics-progress">
+                        <span style="width:68%"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ANALYTICS GRID -->
+            <div class="analytics-grid">
+
+                <!-- MOST BOOKED THERAPISTS -->
+                <div class="analytics-card dashboard-glow fade-slide">
+
+                    <div class="analytics-card-header">
+
+                        <div class="analytics-mini-icon blue-bg">
+                            <img src="{{ asset('img/icons/doctors-hover.svg') }}" width="24">
+                        </div>
+
+                        <div>
+                            <h3>Most Booked Therapists</h3>
+                            <p>Highest patient engagement</p>
+                        </div>
+
+                    </div>
+
+                    @forelse($topDoctors as $doctor)
+
+                    <div class="analytics-row">
+
+                        <div>
+                            <strong>{{ $doctor->docname }}</strong>
+                        </div>
+
+                        <div class="analytics-pill blue-pill">
+                            {{ $doctor->total_bookings }}
+                        </div>
+
+                    </div>
+
+                    @empty
+
+                    <div class="empty-state">
+                        No therapist analytics available.
+                    </div>
+
+                    @endforelse
+
+                </div>
+
+                <!-- ACTIVE PATIENTS -->
+                <div class="analytics-card dashboard-glow fade-slide">
+
+                    <div class="analytics-card-header">
+
+                        <div class="analytics-mini-icon green-bg">
+                            <img src="{{ asset('img/icons/patients-hover.svg') }}" width="24">
+                        </div>
+
+                        <div>
+                            <h3>Active Patients</h3>
+                            <p>Most frequent bookings</p>
+                        </div>
+
+                    </div>
+
+                    @forelse($topPatients as $patient)
+
+                    <div class="analytics-row">
+
+                        <div>
+                            <strong>{{ $patient->pname }}</strong>
+                        </div>
+
+                        <div class="analytics-pill green-pill">
+                            {{ $patient->total_appointments }}
+                        </div>
+
+                    </div>
+
+                    @empty
+
+                    <div class="empty-state">
+                        No patient analytics available.
+                    </div>
+
+                    @endforelse
+
+                </div>
+
+                <!-- SPECIALTIES -->
+                <div class="analytics-card dashboard-glow fade-slide">
+
+                    <div class="analytics-card-header">
+
+                        <div class="analytics-mini-icon orange-bg">
+                            <img src="{{ asset('img/icons/session-iceblue.svg') }}" width="24">
+                        </div>
+
+                        <div>
+                            <h3>Popular Specialties</h3>
+                            <p>Most available specialties</p>
+                        </div>
+
+                    </div>
+
+                    @forelse($topSpecialties as $specialty)
+
+                    <div class="analytics-row">
+
+                        <div>
+                            <strong>{{ $specialty->sname }}</strong>
+                        </div>
+
+                        <div class="analytics-pill orange-pill">
+                            {{ $specialty->total_doctors }}
+                        </div>
+
+                    </div>
+
+                    @empty
+
+                    <div class="empty-state">
+                        No specialty analytics available.
+                    </div>
+
+                    @endforelse
+
+                </div>
+
+            </div>
+
+            <!-- LOWER GRID -->
+            <div class="lower-grid">
+
+                <!-- APPOINTMENT STATS -->
+                <div class="analytics-card dashboard-glow fade-slide large-card">
+
+                    <div class="analytics-card-header">
+
+                        <div class="analytics-mini-icon blue-bg">
+                            <img src="{{ asset('img/icons/book-hover.svg') }}" width="24">
+                        </div>
+
+                        <div>
+                            <h3>Appointment Statistics</h3>
+                            <p>Weekly and monthly booking trends</p>
+                        </div>
+
+                    </div>
+
+                    <div class="stats-grid">
+
+                        <div class="stats-box stats-blue">
+                            <img src="{{ asset('img/icons/book-hover.svg') }}" width="42">
+
+                            <h1 class="counter" data-target="{{ $monthlyAppointments }}">0</h1>
+
+                            <p>Monthly Appointments</p>
+                        </div>
+
+                        <div class="stats-box stats-green">
+                            <img src="{{ asset('img/icons/session-iceblue.svg') }}" width="42">
+
+                            <h1 class="counter" data-target="{{ $weeklyAppointments }}">0</h1>
+
+                            <p>Weekly Appointments</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SYSTEM INSIGHTS -->
+                <div class="analytics-card dashboard-glow fade-slide insights-card">
+
+                    <div class="analytics-card-header">
+
+                        <div class="analytics-mini-icon purple-bg">
+                            <img src="{{ asset('img/icons/dashboard.svg') }}" width="24">
+                        </div>
+
+                        <div>
+                            <h3>System Insights</h3>
+                            <p>Platform performance summary</p>
+                        </div>
+
+                    </div>
+
+                    <div class="insight-box">
+
+                        <div class="insight-item">
+                            <span class="insight-label">Active Therapists</span>
+                            <span class="insight-value">{{ $doctorsCount }}</span>
+                        </div>
+
+                        <div class="insight-item">
+                            <span class="insight-label">Registered Patients</span>
+                            <span class="insight-value">{{ $patientsCount }}</span>
+                        </div>
+
+                        <div class="insight-item">
+                            <span class="insight-label">Monthly Bookings</span>
+                            <span class="insight-value">{{ $monthlyAppointments }}</span>
+                        </div>
+
+                        <div class="insight-item">
+                            <span class="insight-label">Today's Sessions</span>
+                            <span class="insight-value">{{ $sessionsCount }}</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- EXTRA STYLES -->
+        <!-- ========================================================= -->
+
+        <style>
+        .analytics-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #f8fbff, #ffffff);
+            box-shadow: 0 10px 40px rgba(15, 80, 140, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .analytics-hero-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .analytics-icon-wrap {
+            width: 75px;
+            height: 75px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #dbeeff, #f5fbff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .analytics-main-title {
+            margin: 0;
+            font-size: 30px;
+            color: #123;
+            font-weight: 800;
+        }
+
+        .analytics-subtitle {
+            margin-top: 8px;
+            color: #6c757d;
+            font-size: 15px;
+        }
+
+        .live-badge {
+            background: #e8fff1;
+            color: #159447;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #19c15f;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.4);
+                opacity: .6;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .quick-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .quick-strip-card {
+            padding: 25px;
+            border-radius: 22px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .quick-strip-card h2 {
+            margin: 15px 0 0 0;
+            font-size: 34px;
+            font-weight: 800;
+        }
+
+        .quick-strip-card p {
+            margin: 0;
+            font-size: 14px;
+            opacity: .9;
+        }
+
+        .blue-strip {
+            background: linear-gradient(135deg, #5ea3d6, #7cb8e2);
+        }
+
+        .green-strip {
+            background: linear-gradient(135deg, #45b97c, #7dd6a4);
+        }
+
+        .orange-strip {
+            background: linear-gradient(135deg, #e6a34c, #f4bf75);
+        }
+
+        .purple-strip {
+            background: linear-gradient(135deg, #7d7cff, #a3a2ff);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .lower-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .large-card {
+            padding: 30px;
+        }
+
+        .insights-card {
+            padding: 30px;
+        }
+
+        .analytics-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-card-header h3 {
+            margin: 0;
+            color: #123;
+        }
+
+        .analytics-card-header p {
+            margin: 3px 0 0 0;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .analytics-mini-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .blue-bg {
+            background: #e9f5ff;
+        }
+
+        .green-bg {
+            background: #ebfff0;
+        }
+
+        .orange-bg {
+            background: #fff3e3;
+        }
+
+        .purple-bg {
+            background: #f0ebff;
+        }
+
+        .analytics-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .analytics-pill {
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .blue-pill {
+            background: #daf1ff;
+            color: #0077b6;
+        }
+
+        .green-pill {
+            background: #dfffe8;
+            color: #239b56;
+        }
+
+        .orange-pill {
+            background: #fff0da;
+            color: #bc6c25;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stats-box {
+            border-radius: 24px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .stats-box h1 {
+            font-size: 42px;
+            margin: 15px 0 10px 0;
+        }
+
+        .stats-box p {
+            color: #666;
+            margin: 0;
+        }
+
+        .stats-blue {
+            background: #f4faff;
+        }
+
+        .stats-green {
+            background: #f4fff7;
+        }
+
+        .insight-box {
+            background: #f9fbff;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .insight-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+
+        .insight-label {
+            color: #666;
+        }
+
+        .insight-value {
+            font-weight: 800;
+            color: #123;
+        }
+
+        .empty-state {
+            color: #888;
+            padding-top: 20px;
+        }
+
+        @media(max-width:1100px) {
+
+            .lower-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-hero {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+        </style>
+
+        <!-- ========================================================= -->
+        <!-- JAVASCRIPT -->
+        <!-- ========================================================= -->
+
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const counters = document.querySelectorAll('.counter');
+
+            counters.forEach(counter => {
+
+                const target = +counter.getAttribute('data-target');
+
+                let current = 0;
+
+                const increment = Math.ceil(target / 40);
+
+                const updateCounter = () => {
+
+                    current += increment;
+
+                    if (current > target) {
+                        current = target;
+                    }
+
+                    counter.innerText = current;
+
+                    if (current < target) {
+                        requestAnimationFrame(updateCounter);
+                    }
+                };
+
+                updateCounter();
+            });
+
+        });
+        </script>
+        @endsection

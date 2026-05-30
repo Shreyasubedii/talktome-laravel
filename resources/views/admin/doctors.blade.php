@@ -53,7 +53,7 @@
                     <a href="{{ route('admin.doctors') }}"
                         class="non-style-link-menu {{ Route::is('admin.doctors') ? 'non-style-link-menu-active' : '' }}">
                         <div>
-                            <p class="menu-text">Doctors</p>
+                            <p class="menu-text">Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -129,7 +129,7 @@
             <tr>
                 <td colspan="2" style="padding-top:30px;">
                     <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Manage
-                        Doctors</p>
+                        Therapists</p>
                 </td>
                 <td colspan="2">
                     <button onclick="document.getElementById('add-popup').style.display='block'"
@@ -140,7 +140,8 @@
             </tr>
             <tr>
                 <td colspan="4" style="padding-top:10px;">
-                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Doctors
+                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All
+                        Therapists
                         ({{ $doctors->count() }})</p>
                 </td>
             </tr>
@@ -152,7 +153,7 @@
                             <table width="93%" class="sub-table scrolldown" border="0">
                                 <thead>
                                     <tr>
-                                        <th class="table-headin">Doctor Name</th>
+                                        <th class="table-headin">Therapist Name</th>
                                         <th class="table-headin">Email</th>
                                         <th class="table-headin">Specialties</th>
                                         <th class="table-headin">Events</th>
@@ -223,7 +224,7 @@
                         <tr>
                             <td>
                                 <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Add
-                                    New Doctor.</p><br><br>
+                                    New Therapist.</p><br><br>
                             </td>
                         </tr>
                         <tr>
@@ -235,7 +236,7 @@
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="text" name="name" class="input-text" placeholder="Doctor Name"
+                                <input type="text" name="name" class="input-text" placeholder="Therapists Name"
                                     required><br>
                             </td>
                         </tr>
@@ -263,12 +264,12 @@
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="nic" class="form-label">NIC: </label>
+                                <label for="nic" class="form-label">NID: </label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="text" name="nic" class="input-text" placeholder="NIC Number" required><br>
+                                <input type="text" name="nic" class="input-text" placeholder="NID Number" required><br>
                             </td>
                         </tr>
                         <tr>
