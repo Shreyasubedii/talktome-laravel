@@ -34,7 +34,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($doctor->docname, 13) }}..</p>
+                                <p class="profile-title">Dr. {{ Str::limit(ucwords($doctor->docname), 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($doctor->docemail, 22) }}</p>
                             </td>
                         </tr>
@@ -72,7 +72,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('doctor.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">My Sessions</p>
+                            <p class="menu-text">My Availability</p>
                         </div>
                     </a>
                 </td>
@@ -197,8 +197,7 @@
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="tel" class="form-label">Telephone: </label>
-                                    <input type="tel" name="tel" class="input-text" value="{{ $doctor->docter }}"
-                                        required>
+                                    <input type="tel" name="tel" class="input-text" value="{{ $doctor->doctel }}" required>
                                 </td>
                             </tr>
                             <tr>

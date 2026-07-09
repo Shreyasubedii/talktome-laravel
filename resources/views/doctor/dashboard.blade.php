@@ -41,7 +41,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($doctor->docname, 13) }}..</p>
+                                <p class="profile-title">Dr. {{ Str::limit(ucwords($doctor->docname), 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($doctor->docemail, 22) }}</p>
                             </td>
                         </tr>
@@ -85,7 +85,7 @@
                     <a href="{{ route('doctor.schedules') }}"
                         class="non-style-link-menu {{ Route::is('doctor.schedules') ? 'non-style-link-menu-active' : '' }}">
                         <div>
-                            <p class="menu-text">My Sessions</p>
+                            <p class="menu-text">My Availability</p>
                         </div>
                     </a>
                 </td>
@@ -139,15 +139,16 @@
                         <table class="filter-container doctor-header" style="border: none;width:95%" border="0">
                             <tr>
                                 <td>
+                                    <br><br><br>
                                     <h3>Welcome!</h3>
-                                    <h1>{{ $doctor->docname }}.</h1>
+                                    <h1>Dr. {{ ucwords ($doctor->docname) }}</h1>
                                     <p>Thanks for joining with us. We are always trying to get you a complete
-                                        service<br>
-                                        You can view your daily schedule, Reach Patients Appointment at home!<br><br>
+                                        service. <br><br>
+                                        You can view your daily schedule and manage patient appointments from home!<br><br>
                                     </p>
                                     <a href="{{ route('doctor.appointments') }}" class="non-style-link"><button
                                             class="btn-primary btn" style="width:30%">View My Appointments</button></a>
-                                    <br><br>
+                                    <br><br><br><br>
                                 </td>
                             </tr>
                         </table>
@@ -246,40 +247,54 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @forelse($schedules->where('scheduledate', '>=',
-                                                $today)->where('scheduledate', '<=', date('Y-m-d', strtotime('+1
-                                                    week'))) as $schedule) <tr>
-                                                    <td style="padding:20px;">
-                                                        &nbsp;{{ Str::limit($schedule->title, 30) }}</td>
-                                                    <td style="padding:20px;font-size:13px;">
-                                                        {{ $schedule->scheduledate }}</td>
-                                                    <td style="text-align:center;">
-                                                        {{ substr($schedule->scheduletime, 0, 5) }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="3">
-                                <br><br><br><br>
-                                <center>
-                                    <img src="{{ asset('img/nothingfound.png') }}" width="25%">
-                                    <p class="heading-main12"
-                                        style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show!
-                                    </p>
-                                </center>
-                                <br><br><br><br>
-                            </td>
-                        </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
-    </div>
-    </center>
-    </td>
-    </tr>
-    </table>
-    </td>
-    </tr>
-    </table>
-</div>
-</div>
-@endsection
+                                                @php
+                                                $upcomingSchedules = $schedules->filter(function ($schedule) use ($today) {
+                                                    $scheduleDate = \Carbon\Carbon::parse($schedule->scheduledate);
+                                                    return $scheduleDate->betweenIncluded(
+                                                         \Carbon\Carbon::parse($today),
+                                                         \Carbon\Carbon::parse($today)->addWeek()
+                                                          );
+                                                        });
+                                                        @endphp
+                                                        
+                                                        @forelse($upcomingSchedules as $schedule)
+                                                        <tr>
+                                                             <td style="padding:20px;">
+                                                                 {{ Str::limit($schedule->title, 30) }}
+                                                                 </td>
+                                                                 
+                                                                 <td style="padding:20px;font-size:13px;">
+                                                                     {{ \Carbon\Carbon::parse($schedule->scheduledate)->format('M d, Y') }}
+                                                                    </td>
+                                                                    
+                                                                    <td style="text-align:center;">
+                                                                          {{ \Carbon\Carbon::parse($schedule->start_time ?? $schedule->scheduletime)->format('h:i A') }}
+                                                                         </td>
+                                                                        </tr>
+                                                                        @empty
+                                                                        <tr>
+                                                                            <td colspan="3">
+                                                                                 <br><br>
+                                                                                  <center>
+                                                                                  <img src="{{ asset('img/nothingfound.png') }}" width="25%">
+                                                                                  <p class="heading-main12" style="font-size:20px;">
+                                                                                     Nothing to show!
+                                                                                     </p>
+                                                                                      </center>
+                                                                                      <br><br>
+                                                                                     </td>
+                                                                                    </tr>
+                                                                                    @endforelse
+                                                                                 </tbody>
+                                                                                 </table>
+                                                                                </div>
+                                                                             </center>
+                                                                            </td>
+                                                                         </tr>
+                                                                        </table>
+                                                                     </td>
+                                                                    </tr>
+                                                                 </table>
+                                                                </div>
+                                                            </div>
+                                                            @endsection

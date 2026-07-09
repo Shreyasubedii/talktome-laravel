@@ -87,7 +87,7 @@
 
                             <td style="padding:0;margin:0;">
                                 <p class="profile-title">
-                                    {{ Str::limit($patient->pname, 13) }}..
+                                    {{ Str::limit($patient->pname, 13) }}
                                 </p>
 
                                 <p class="profile-subtitle">
@@ -126,7 +126,7 @@
                 <td class="menu-btn menu-icon-doctor">
                     <a href="{{ route('patient.doctors') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">All Doctors</p>
+                            <p class="menu-text">All Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -136,7 +136,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">Group Sessions</p>
+                            <p class="menu-text">Available Sessions</p>
                         </div>
                     </a>
                 </td>

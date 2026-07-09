@@ -14,6 +14,44 @@
 .sub-table {
     animation: transitionIn-Y-bottom 0.5s;
 }
+
+.overlay{
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background:rgba(0,0,0,0.5);
+    transition:opacity 500ms;
+    z-index:999;
+}
+
+.popup{
+    margin:70px auto;
+    padding:20px;
+    background:#fff;
+    border-radius:8px;
+    width:45%;
+    position:relative;
+}
+
+.popup .close{
+    position:absolute;
+    top:15px;
+    right:25px;
+    font-size:30px;
+    text-decoration:none;
+    color:#333;
+}
+
+.popup .close:hover{
+    color:red;
+}
+
+.content{
+    max-height:80vh;
+    overflow:auto;
+}
 </style>
 @endsection
 
@@ -29,7 +67,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($doctor->docname, 13) }}..</p>
+                                <p class="profile-title">Dr. {{ Str::limit(ucwords($doctor->docname), 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($doctor->docemail, 22) }}</p>
                             </td>
                         </tr>
@@ -67,7 +105,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('doctor.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">My Sessions</p>
+                            <p class="menu-text">My Availability</p>
                         </div>
                     </a>
                 </td>
@@ -155,10 +193,13 @@
                                         <td>
                                             <div style="display:flex;justify-content: center;">
                                                 {{-- View button or action can be added here --}}
-                                                <button class="btn-primary-soft btn button-icon btn-view"
-                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
-                                                    <font class="tn-in-text">View</font>
-                                                </button>
+                                                <a href="?action=view&id={{ $patient->pid }}"
+                                                class="non-style-link">
+                                                 <button class="btn-primary-soft btn button-icon btn-view"
+                                                  style="padding-left:40px;padding-top:12px;padding-bottom:12px;margin-top:10px;">
+                                                   <font class="tn-in-text">View</font>
+                                                 </button>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -186,4 +227,84 @@
         </table>
     </div>
 </div>
+
+@if(request('action') == 'view')
+
+@php
+    $viewPatient = $patients->where('pid', request('id'))->first();
+@endphp
+
+@if($viewPatient)
+
+<div id="popup1" class="overlay">
+    <div class="popup">
+
+        <center>
+
+            <a class="close" href="{{ route('doctor.patients') }}">&times;</a>
+
+            <div class="content">
+                <br>
+
+                <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+
+                    <tr>
+                        <td colspan="2">
+                            <p class="heading-main12"
+                                style="margin-left:0;font-size:24px;color:rgb(49,49,49)">
+                                Patient Details
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="label-td">Name:</td>
+                        <td>{{ $viewPatient->pname }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label-td">Email:</td>
+                        <td>{{ $viewPatient->pemail }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label-td">Phone:</td>
+                        <td>{{ $viewPatient->ptel }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label-td">NIC:</td>
+                        <td>{{ $viewPatient->pnic }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="label-td">Date of Birth:</td>
+                        <td>{{ $viewPatient->pdob }}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <br>
+
+                            <a href="{{ route('doctor.patients') }}">
+                                <input type="button"
+                                    value="Close"
+                                    class="login-btn btn-primary-soft btn">
+                            </a>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </center>
+
+    </div>
+</div>
+
+@endif
+@endif
+
 @endsection

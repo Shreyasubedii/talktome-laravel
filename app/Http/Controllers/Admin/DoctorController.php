@@ -45,6 +45,31 @@ class DoctorController extends Controller
         return back()->with('success', 'Doctor added successfully');
     }
     
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'tel' => 'required|string|max:20',
+            'nic' => 'required|string|max:20',
+            'specialty' => 'required|exists:specialties,id',
+        ]);
+
+        $doctor = Doctor::findOrFail($id);
+        $doctor->update([
+            'docname' => $request->name,
+            'docemail' => $request->email,
+            'doctel' => $request->tel,
+            'docnic' => $request->nic,
+            'specialties' => $request->specialty,
+        ]);
+
+        WebUser::where('email', $doctor->getOriginal('docemail'))->delete();
+        WebUser::create(['email' => $request->email, 'usertype' => 'd']);
+
+        return back()->with('success', 'Doctor updated successfully');
+    }
+
     public function destroy($id)
     {
         $doctor = Doctor::findOrFail($id);

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Scheduled Sessions')
+@section('title', 'Doctor Availability')
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
@@ -29,7 +29,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}..</p>
+                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($patient->pemail, 22) }}</p>
                             </td>
                         </tr>
@@ -58,7 +58,7 @@
                 <td class="menu-btn menu-icon-doctor">
                     <a href="{{ route('patient.doctors') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">All Doctors</p>
+                            <p class="menu-text">All Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -67,7 +67,7 @@
                 <td class="menu-btn menu-icon-session menu-active menu-icon-session-active">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu non-style-link-menu-active">
                         <div>
-                            <p class="menu-text">Group Sessions</p>
+                            <p class="menu-text">Available Sessions</p>
                         </div>
                     </a>
                 </td>
@@ -125,7 +125,7 @@
         <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
             <tr>
                 <td width="13%">
-                    <a href="{{ route('patient.dashboard') }}"><button
+                    <a href="{{ route('patient.doctors') }}"><button
                             class="login-btn btn-primary-soft btn btn-icon-back"
                             style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px">
                             <font class="tn-in-text">Back</font>
@@ -134,7 +134,7 @@
                 <td>
                     <form action="{{ route('patient.schedules') }}" method="get" class="header-search">
                         <input type="search" name="search" class="input-text header-searchbar"
-                            placeholder="Search Session title or Doctor name" value="{{ $search }}">&nbsp;&nbsp;
+                            placeholder="Search availability or doctor name" value="{{ $search }}">&nbsp;&nbsp;
                         <input type="Submit" value="Search" class="login-btn btn-primary btn"
                             style="padding: 10px 25px;">
                     </form>
@@ -152,8 +152,15 @@
 
             <tr>
                 <td colspan="4" style="padding-top:10px;width: 100%;">
-                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">Scheduled
-                        Sessions ({{ $schedules->count() }})</p>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">Available Sessions ({{ $schedules->count() }})</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4">
+                    <div style="margin: 8px 45px 16px; padding: 14px 16px; border-radius: 12px; background: #f8fbff; border: 1px solid #dbeafe; color: #4b5563;">
+                        Pick a 30-minute slot that suits you.
+                    </div>
                 </td>
             </tr>
 
@@ -190,8 +197,8 @@
                                 <thead>
                                     <tr>
                                         <th class="table-headin">Session Title</th>
-                                        <th class="table-headin">Doctor</th>
-                                        <th class="table-headin">Scheduled Date & Time</th>
+                                        <th class="table-headin">Therapist</th>
+                                        <th class="table-headin">Available slot</th>
                                         <th class="table-headin">Events</th>
                                     </tr>
                                 </thead>
@@ -199,17 +206,27 @@
                                     @forelse($schedules as $schedule)
                                     <tr>
                                         <td> &nbsp;{{ Str::limit($schedule->title, 30) }}</td>
-                                        <td>Dr. {{ $schedule->doctor?->docname }}
+                                        <td>Dr. {{ ucwords($schedule->doctor?->docname) }}
                                             ({{ $schedule->doctor?->specialty?->sname }})</td>
-                                        <td style="text-align:center;">{{ $schedule->scheduledate }} @
-                                            {{ substr($schedule->scheduletime, 0, 5) }}</td>
+
+                                        <td style="text-align:center;">
+                                            {{ \Carbon\Carbon::parse($schedule->scheduledate)->format('M d, Y') }}<br>
+                                             {{ \Carbon\Carbon::parse($schedule->start_time ?? $schedule->scheduletime)->format('h:i A') }}
+                                              -
+                                               {{ \Carbon\Carbon::parse($schedule->end_time ?? $schedule->scheduletime)->format('h:i A') }}
+                                               <br>
+                                                <span style="font-size:12px;color:#2563eb;">
+                                                     {{ $schedule->remaining_capacity }}/{{ $schedule->nop }} open
+                                                    </span>
+                                                </td>
+                                                
                                         <td>
                                             <div style="display:flex;justify-content: center;">
                                                 <a href="{{ route('patient.booking', $schedule->docid) }}"
                                                     class="non-style-link"><button
                                                         class="btn-primary-soft btn button-icon menu-icon-appoinment"
                                                         style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
-                                                        <font class="tn-in-text">Book Now</font>
+                                                        <font class="tn-in-text">Book Slot</font>
                                                     </button></a>
                                             </div>
                                         </td>
@@ -223,7 +240,7 @@
                                                 <br>
                                                 <p class="heading-main12"
                                                     style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">No
-                                                    sessions found!</p>
+                                                    availability found!</p>
                                             </center>
                                             <br><br><br><br>
                                         </td>

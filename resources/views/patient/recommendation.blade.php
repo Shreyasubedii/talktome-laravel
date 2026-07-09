@@ -29,7 +29,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}..</p>
+                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($patient->pemail, 22) }}</p>
                             </td>
                         </tr>
@@ -58,7 +58,7 @@
                 <td class="menu-btn menu-icon-doctor">
                     <a href="{{ route('patient.doctors') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">All Doctors</p>
+                            <p class="menu-text">All Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -67,7 +67,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">Scheduled Sessions</p>
+                            <p class="menu-text">Available Sessions</p>
                         </div>
                     </a>
                 </td>

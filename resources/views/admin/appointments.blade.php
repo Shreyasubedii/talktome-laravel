@@ -174,9 +174,9 @@
                                     <tr>
                                         <th class="table-headin">Patient name</th>
                                         <th class="table-headin">Appointment number</th>
-                                        <th class="table-headin">Doctor</th>
+                                        <th class="table-headin">Therapist</th>
                                         <th class="table-headin">Session Title</th>
-                                        <th class="table-headin" style="font-size:10px">Session Date & Time</th>
+                                        <th class="table-headin">Session Time</th>
                                         <th class="table-headin">Appointment Date</th>
                                         <th class="table-headin">Events</th>
                                     </tr>
@@ -190,13 +190,14 @@
                                         <td
                                             style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
                                             {{ $appointment->apponum }}</td>
-                                        <td>{{ Str::limit($appointment->schedule?->doctor?->docname ?? 'Unknown Doctor', 25) }}
+                                        <td>Dr. {{ Str::limit (ucwords($appointment->schedule?->doctor?->docname ?? 'Unknown Doctor'), 25) }}
                                         </td>
                                         <td>{{ Str::limit($appointment->schedule?->title ?? 'Deleted Session', 15) }}
                                         </td>
-                                        <td style="text-align:center;font-size:12px;">
-                                            {{ $appointment->schedule?->scheduledate ?? 'N/A' }}
-                                            <br>{{ $appointment->schedule ? substr($appointment->schedule->scheduletime, 0, 5) : '' }}
+                                        <td style="display:flex;justify-content: center;">
+                                            <!-- {{ $appointment->schedule?->scheduledate ?? \Carbon\Carbon::now()->format('M d, Y') }} -->
+                                            <br>
+                                            {{ $appointment->schedule ? \Carbon\Carbon::parse($appointment->schedule->scheduletime)->format('h:i A') : '' }}
                                         </td>
                                         <td style="text-align:center;">{{ $appointment->appodate }}</td>
                                         <td>

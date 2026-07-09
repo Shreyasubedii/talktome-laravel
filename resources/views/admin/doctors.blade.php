@@ -128,8 +128,7 @@
 
             <tr>
                 <td colspan="2" style="padding-top:30px;">
-                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Manage
-                        Therapists</p>
+                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)"></p>
                 </td>
                 <td colspan="2">
                     <button onclick="document.getElementById('add-popup').style.display='block'"
@@ -166,17 +165,17 @@
                                         <td>{{ Str::limit($doctor->docemail, 20) }}</td>
                                         <td>{{ Str::limit($doctor->specialty?->sname, 20) }}</td>
                                         <td>
-                                            <div style="display:flex;justify-content: center;">
-                                                <button class="btn-primary-soft btn button-icon btn-edit"
-                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                                            <div style="display:flex;justify-content: center;align-items:center;gap:8px;flex-wrap:wrap;">
+                                                <button type="button" class="btn-primary-soft btn button-icon btn-edit"
+                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"
+                                                    onclick="openAdminDoctorEdit({{ $doctor->docid }}, '{{ addslashes($doctor->docname) }}', '{{ $doctor->docemail }}', '{{ $doctor->doctel }}', '{{ $doctor->docnic }}', '{{ $doctor->specialties }}')">
                                                     <font class="tn-in-text">Edit</font>
                                                 </button>
-                                                &nbsp;&nbsp;&nbsp;
-                                                <button class="btn-primary-soft btn button-icon btn-view"
-                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
+                                                <button type="button" class="btn-primary-soft btn button-icon btn-view"
+                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"
+                                                    onclick="openAdminDoctorView('{{ addslashes($doctor->docname) }}', '{{ $doctor->docemail }}', '{{ $doctor->doctel }}', '{{ $doctor->docnic }}', '{{ $doctor->specialty?->sname }}')">
                                                     <font class="tn-in-text">View</font>
                                                 </button>
-                                                &nbsp;&nbsp;&nbsp;
                                                 <form action="{{ route('admin.doctors.destroy', $doctor->docid) }}"
                                                     method="POST">
                                                     @csrf @method('DELETE')
@@ -305,6 +304,83 @@
                             </td>
                         </tr>
                         </form>
+                    </table>
+                </div>
+            </div>
+        </center>
+    </div>
+</div>
+
+<script>
+function openAdminDoctorEdit(id, name, email, tel, nic, specialty) {
+    document.getElementById('editDoctorForm').action = '/admin/doctors/' + id;
+    document.getElementById('edit_doctor_name').value = name;
+    document.getElementById('edit_doctor_email').value = email;
+    document.getElementById('edit_doctor_tel').value = tel;
+    document.getElementById('edit_doctor_nic').value = nic;
+    document.getElementById('edit_doctor_specialty').value = specialty;
+    document.getElementById('edit-doctor-popup').style.display = 'block';
+}
+
+function openAdminDoctorView(name, email, tel, nic, specialty) {
+    document.getElementById('view_doctor_name').textContent = name;
+    document.getElementById('view_doctor_email').textContent = email;
+    document.getElementById('view_doctor_tel').textContent = tel;
+    document.getElementById('view_doctor_nic').textContent = nic;
+    document.getElementById('view_doctor_specialty').textContent = specialty;
+    document.getElementById('view-doctor-popup').style.display = 'block';
+}
+</script>
+
+<div id="edit-doctor-popup" class="overlay" style="display: none;">
+    <div class="popup">
+        <center>
+            <a class="close" href="#" onclick="document.getElementById('edit-doctor-popup').style.display='none'">&times;</a>
+            <div style="display:flex;justify-content:center;">
+                <div class="abc">
+                    <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                        <tr><td><p style="padding:0;margin:0;text-align:left;font-size:25px;font-weight:500;">Edit Therapist</p><br></td></tr>
+                        <tr><td>
+                            <form id="editDoctorForm" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <label class="form-label">Name:</label>
+                                <input type="text" id="edit_doctor_name" name="name" class="input-text" required><br>
+                                <label class="form-label">Email:</label>
+                                <input type="email" id="edit_doctor_email" name="email" class="input-text" required><br>
+                                <label class="form-label">Telephone:</label>
+                                <input type="tel" id="edit_doctor_tel" name="tel" class="input-text" required><br>
+                                <label class="form-label">NID:</label>
+                                <input type="text" id="edit_doctor_nic" name="nic" class="input-text" required><br>
+                                <label class="form-label">Specialty:</label>
+                                <select id="edit_doctor_specialty" name="specialty" class="box">
+                                    @foreach($specialties as $specialty)
+                                    <option value="{{ $specialty->id }}">{{ $specialty->sname }}</option>
+                                    @endforeach
+                                </select><br>
+                                <input type="submit" value="Save Changes" class="login-btn btn-primary btn" style="margin-top:10px;">
+                            </form>
+                        </td></tr>
+                    </table>
+                </div>
+            </div>
+        </center>
+    </div>
+</div>
+
+<div id="view-doctor-popup" class="overlay" style="display: none;">
+    <div class="popup">
+        <center>
+            <a class="close" href="#" onclick="document.getElementById('view-doctor-popup').style.display='none'">&times;</a>
+            <div style="display:flex;justify-content:center;">
+                <div class="abc">
+                    <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                        <tr><td><p style="padding:0;margin:0;text-align:left;font-size:25px;font-weight:500;">Therapist Details</p><br></td></tr>
+                        <tr><td><strong>Name:</strong> <span id="view_doctor_name"></span></td></tr>
+                        <tr><td><strong>Email:</strong> <span id="view_doctor_email"></span></td></tr>
+                        <tr><td><strong>Telephone:</strong> <span id="view_doctor_tel"></span></td></tr>
+                        <tr><td><strong>NID:</strong> <span id="view_doctor_nic"></span></td></tr>
+                        <tr><td><strong>Specialty:</strong> <span id="view_doctor_specialty"></span></td></tr>
                     </table>
                 </div>
             </div>

@@ -301,7 +301,7 @@
                                 <p
                                     style="padding-bottom:19px;padding-left:50px;font-size:15px;font-weight:500;color:#212529e3;line-height: 20px;">
                                     Here's Quick access to Upcoming Appointments until 7 days<br>
-                                    More details available in @Appointment section.
+                                    More details available in Appointment section.
                                 </p>
                             </td>
                             <td>
@@ -341,7 +341,7 @@
                                                         &nbsp;{{ Str::limit($appo->patient?->pname ?? 'Unknown', 25) }}
                                                     </td>
                                                     <td style="font-weight:600;">
-                                                        &nbsp;{{ Str::limit($appo->schedule?->doctor?->docname ?? 'Unknown', 25) }}
+                                                        &nbsp;Dr. {{ Str::limit(ucwords($appo->schedule?->doctor?->docname ?? 'Unknown'), 25) }}
                                                     </td>
                                                     <td>{{ Str::limit($appo->schedule?->title ?? 'N/A', 15) }}</td>
                                                 </tr>
@@ -380,11 +380,13 @@
                                                 <tr>
                                                     <td style="padding:20px;">
                                                         &nbsp;{{ Str::limit($session->title, 30) }}</td>
-                                                    <td>{{ Str::limit($session->doctor?->docname ?? 'Unknown', 20) }}
+                                                    <td>Dr. {{ Str::limit (ucwords ($session->doctor?->docname ?? 'Unknown'), 20) }}
                                                     </td>
                                                     <td style="text-align:center;">
-                                                        {{ $session->scheduledate }}<br>{{ $session->scheduletime }}
-                                                    </td>
+                                                         {{ \Carbon\Carbon::parse($session->scheduledate)->format('M d, Y') }}
+                                                         <br>
+                                                         {{ \Carbon\Carbon::parse($session->start_time ?? $session->scheduletime)->format('h:i A') }}
+                                                        </td>
                                                 </tr>
                                                 @empty
                                                 <tr>

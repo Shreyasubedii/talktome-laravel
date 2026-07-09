@@ -21,4 +21,14 @@ class PatientController extends Controller
         $today = date('Y-m-d');
         return view('doctor.patients', compact('patients', 'today', 'doctor'));
     }
+
+     public function show($pid)
+    {
+        $doctor = Auth::guard('doctor')->user();
+
+        $patient = Patient::where('pid', $pid)->firstOrFail();
+
+        return view('doctor.patient-view', compact('patient', 'doctor'));
+    }
+
 }

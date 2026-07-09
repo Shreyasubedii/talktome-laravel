@@ -16,36 +16,74 @@ class BookingController extends Controller
         $doctor = Doctor::with('specialty')->findOrFail($doctorId);
         $schedules = Schedule::where('docid', $doctorId)
             ->where('scheduledate', '>=', now()->toDateString())
-            ->get();
+            ->where('status', 'available')
+            ->where('is_full', false)
+            ->orderBy('scheduledate')
+            ->orderBy('start_time')
+            ->get()
+            ->filter(function ($schedule) {
+                return $schedule->remaining_capacity > 0;
+            })
+            ->values();
+        $groupedSchedules = $schedules->groupBy(function ($schedule) {
+            return $schedule->scheduledate instanceof \Carbon\Carbon
+                ? $schedule->scheduledate->format('Y-m-d')
+                : (string) $schedule->scheduledate;
+        });
+        $bookingDates = $schedules->pluck('scheduledate')
+            ->map(function ($date) {
+                return $date instanceof \Carbon\Carbon ? $date->format('Y-m-d') : (string) $date;
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
         $today = date('Y-m-d');
         $patient = Auth::guard('patient')->user();
         
-        return view('patient.booking', compact('doctor', 'schedules', 'today', 'patient'));
+        return view('patient.booking', compact('doctor', 'schedules', 'groupedSchedules', 'bookingDates', 'today', 'patient'));
     }
     
     public function store(Request $request)
     {
         $request->validate([
-            'schedule' => 'required',
-            'date' => 'required|date'
+            'schedule' => 'required|exists:schedule,scheduleid'
         ]);
-        
+
         $patient = Auth::guard('patient')->user();
         $schedule = Schedule::findOrFail($request->schedule);
-        
-        // Check available slots
-        $bookedCount = Appointment::where('scheduleid', $request->schedule)->count();
-        if ($bookedCount >= $schedule->nop) {
-            return back()->with('error', 'No available slots');
+
+        if ($schedule->scheduledate->lt(now()->toDateString())) {
+            return back()->with('error', 'This availability slot is in the past.');
         }
-        
+
+        $existingBooking = Appointment::where('scheduleid', $schedule->scheduleid)
+            ->where('pid', $patient->pid)
+            ->exists();
+
+        if ($existingBooking) {
+            return back()->with('error', 'You already booked this availability slot.');
+        }
+
+        $bookedCount = Appointment::where('scheduleid', $schedule->scheduleid)->count();
+        if ($bookedCount >= $schedule->nop || $schedule->is_full || $schedule->status !== 'available' || $schedule->remaining_capacity <= 0) {
+            return back()->with('error', 'This slot is no longer available.');
+        }
+
         $appointment = Appointment::create([
             'pid' => $patient->pid,
             'apponum' => $bookedCount + 1,
-            'scheduleid' => $request->schedule,
-            'appodate' => $request->date
+            'scheduleid' => $schedule->scheduleid,
+            'appodate' => $schedule->scheduledate
         ]);
-        
+
+        $remainingCapacity = $schedule->nop - ($bookedCount + 1);
+        $schedule->update([
+            'remaining_capacity' => max($remainingCapacity, 0),
+            'is_full' => $remainingCapacity <= 0,
+            'status' => $remainingCapacity <= 0 ? 'full' : 'available',
+        ]);
+
         return redirect()->route('patient.booking.complete', $appointment->appoid);
     }
     

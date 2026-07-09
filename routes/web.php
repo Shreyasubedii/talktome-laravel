@@ -53,12 +53,16 @@ Route::prefix('admin')->name('admin.')->middleware(['multi.auth'])->group(functi
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/doctors', [AdminDoctorController::class, 'index'])->name('doctors');
     Route::post('/doctors', [AdminDoctorController::class, 'store'])->name('doctors.store');
+    Route::put('/doctors/{id}', [AdminDoctorController::class, 'update'])->name('doctors.update');
     Route::delete('/doctors/{id}', [AdminDoctorController::class, 'destroy'])->name('doctors.destroy');
     Route::get('/patients', [AdminPatientController::class, 'index'])->name('patients');
+    Route::put('/patients/{id}', [AdminPatientController::class, 'update'])->name('patients.update');
+    Route::delete('/patients/{id}', [AdminPatientController::class, 'destroy'])->name('patients.destroy');
     Route::get('/appointments', [AdminAppointmentController::class, 'index'])->name('appointments');
     Route::delete('/appointments/{id}', [AdminAppointmentController::class, 'destroy'])->name('appointments.destroy');
     Route::get('/schedules', [AdminScheduleController::class, 'index'])->name('schedules');
     Route::post('/schedules', [AdminScheduleController::class, 'store'])->name('schedules.store');
+    Route::put('/schedules/{id}', [AdminScheduleController::class, 'update'])->name('schedules.update');
     Route::delete('/schedules/{id}', [AdminScheduleController::class, 'destroy'])->name('schedules.destroy');
 });
 
@@ -67,12 +71,14 @@ Route::prefix('doctor')->name('doctor.')->middleware(['multi.auth'])->group(func
     Route::get('/dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
     Route::get('/schedules', [DoctorScheduleController::class, 'index'])->name('schedules');
     Route::post('/schedules', [DoctorScheduleController::class, 'store'])->name('schedules.store');
+    Route::put('/schedules/{id}', [DoctorScheduleController::class, 'update'])->name('schedules.update');
     Route::delete('/schedules/{id}', [DoctorScheduleController::class, 'destroy'])->name('schedules.destroy');
     Route::get('/appointments', [DoctorAppointmentController::class, 'index'])->name('appointments');
     Route::delete('/appointments/{id}', [DoctorAppointmentController::class, 'destroy'])->name('appointments.destroy');
     Route::get('/patients', [DoctorPatientController::class, 'index'])->name('patients');
     Route::get('/settings', [DoctorSettingsController::class, 'index'])->name('settings');
     Route::put('/settings', [DoctorSettingsController::class, 'update'])->name('settings.update');
+    Route::get('/patients/{pid}', [DoctorPatientController::class, 'show'])->name('patients.show');
 });
 
 // Patient routes

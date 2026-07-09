@@ -53,7 +53,7 @@
                     <a href="{{ route('admin.doctors') }}"
                         class="non-style-link-menu {{ Route::is('admin.doctors') ? 'non-style-link-menu-active' : '' }}">
                         <div>
-                            <p class="menu-text">Doctors</p>
+                            <p class="menu-text">Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -123,14 +123,12 @@
 
             <tr>
                 <td colspan="4">
-                    <div style="display: flex;margin-top: 40px;">
+                    <div style="display: flex;margin-top: 40px;align-items: center;justify-content: space-between;">
                         <div class="heading-main12"
-                            style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;">Schedule a
-                            Session</div>
-                        <button onclick="document.getElementById('add-popup').style.display='block'"
-                            class="login-btn btn-primary btn button-icon"
-                            style="margin-left:25px;background-image: url('{{ asset('img/icons/add.svg') }}');">Add a
-                            Session</button>
+                            style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;"></div>
+                        <!-- <div style="margin-right: 45px;color: rgb(102, 102, 102);font-size: 14px;">
+                            Doctors add their availability slots and patients book from those open times.
+                        </div> -->
                     </div>
                 </td>
             </tr>
@@ -186,7 +184,7 @@
                                 <thead>
                                     <tr>
                                         <th class="table-headin">Session Title</th>
-                                        <th class="table-headin">Doctor</th>
+                                        <th class="table-headin">Therapist</th>
                                         <th class="table-headin">Scheduled Date & Time</th>
                                         <th class="table-headin">Max number that can be booked</th>
                                         <th class="table-headin">Events</th>
@@ -196,20 +194,20 @@
                                     @forelse($schedules as $schedule)
                                     <tr>
                                         <td> &nbsp;{{ Str::limit($schedule->title, 30) }}</td>
-                                        <td>{{ Str::limit($schedule->doctor?->docname ?? 'Unknown', 20) }}</td>
-                                        <td style="text-align:center;">{{ substr($schedule->scheduledate,0,10) }}
-                                            {{ substr($schedule->scheduletime,0,5) }}</td>
-                                        <td style="text-align:center;">{{ $schedule->nop }}</td>
+                                        <td>Dr. {{ Str::limit(ucwords($schedule->doctor?->docname ?? 'Unknown'), 20) }}</td>
+                                        <td style="text-align:center;">
+                                            <div style="font-weight:600; color:#111827;">{{ \Carbon\Carbon::parse($schedule->scheduledate)->format('M d, Y') }}</div>
+                                            <div style="margin-top:4px; color:#4b5563;">{{ \Carbon\Carbon::parse($schedule->start_time ?? $schedule->scheduletime)->format('h:i A') }} - {{ \Carbon\Carbon::parse($schedule->end_time ?? $schedule->scheduletime)->format('h:i A') }}</div>
+                                        </td>
+                                        <td style="text-align:center;">{{ $schedule->remaining_capacity ?? $schedule->nop }}/{{ $schedule->nop }}</td>
                                         <td>
-                                            <div style="display:flex;justify-content: center;">
-                                                <button class="btn-primary-soft btn button-icon btn-view"
-                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;">
-                                                    <font class="tn-in-text">View</font>
+                                            <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;">
+                                                <button type="button" class="btn-primary-soft btn button-icon btn-view"
+                                                    style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"
+                                                    onclick="openAdminEditAvailability({{ $schedule->scheduleid }}, '{{ addslashes($schedule->title) }}', '{{ \Carbon\Carbon::parse($schedule->scheduledate)->format('Y-m-d') }}', '{{ $schedule->start_time ?? $schedule->scheduletime }}', '{{ $schedule->end_time ?? $schedule->scheduletime }}', '{{ $schedule->nop }}')">
+                                                    <font class="tn-in-text">Edit</font>
                                                 </button>
-                                                &nbsp;&nbsp;&nbsp;
-                                                <form
-                                                    action="{{ route('admin.schedules.destroy', $schedule->scheduleid) }}"
-                                                    method="POST">
+                                                <form action="{{ route('admin.schedules.destroy', $schedule->scheduleid) }}" method="POST">
                                                     @csrf @method('DELETE')
                                                     <button type="submit"
                                                         class="btn-primary-soft btn button-icon btn-delete"
@@ -247,6 +245,18 @@
         </table>
     </div>
 </div>
+
+<script>
+function openAdminEditAvailability(id, title, date, startTime, endTime, max) {
+    document.getElementById('editAvailabilityForm').action = '/admin/schedules/' + id;
+    document.getElementById('edit_title').value = title;
+    document.getElementById('edit_date').value = date;
+    document.getElementById('edit_start_time').value = startTime.slice(0, 5);
+    document.getElementById('edit_end_time').value = endTime.slice(0, 5);
+    document.getElementById('edit_nop').value = max;
+    document.getElementById('editPopup').style.display = 'block';
+}
+</script>
 
 {{-- Add Session Popup --}}
 <div id="add-popup" class="overlay" style="display: none;">
@@ -314,12 +324,22 @@
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="time" class="form-label">Schedule Time: </label>
+                                <label for="start_time" class="form-label">Start Time: </label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="time" name="time" class="input-text" placeholder="Time" required><br>
+                                <input type="time" name="start_time" class="input-text" required><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <label for="end_time" class="form-label">End Time: </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" colspan="2">
+                                <input type="time" name="end_time" class="input-text" required><br>
                             </td>
                         </tr>
                         <tr>
@@ -330,6 +350,44 @@
                             </td>
                         </tr>
                         </form>
+                    </table>
+                </div>
+            </div>
+        </center>
+    </div>
+</div>
+
+<div id="editPopup" class="overlay" style="display: none;">
+    <div class="popup">
+        <center>
+            <a class="close" href="#" onclick="document.getElementById('editPopup').style.display='none'">&times;</a>
+            <div style="display:flex;justify-content:center;">
+                <div class="abc">
+                    <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                        <tr>
+                            <td>
+                                <p style="padding:0;margin:0;text-align:left;font-size:25px;font-weight:500;">Edit Availability</p><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <form id="editAvailabilityForm" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <label class="form-label">Availability Title:</label>
+                                    <input type="text" id="edit_title" name="title" class="input-text" required><br>
+                                    <label class="form-label">Max patients:</label>
+                                    <input type="number" id="edit_nop" name="nop" class="input-text" min="1" required><br>
+                                    <label class="form-label">Availability Date:</label>
+                                    <input type="date" id="edit_date" name="date" class="input-text" min="{{ date('Y-m-d') }}" required><br>
+                                    <label class="form-label">Start Time:</label>
+                                    <input type="time" id="edit_start_time" name="start_time" class="input-text" required><br>
+                                    <label class="form-label">End Time:</label>
+                                    <input type="time" id="edit_end_time" name="end_time" class="input-text" required><br>
+                                    <input type="submit" value="Update Availability" class="login-btn btn-primary btn" style="margin-top:10px;">
+                                </form>
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>

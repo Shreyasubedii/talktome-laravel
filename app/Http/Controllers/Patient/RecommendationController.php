@@ -11,142 +11,178 @@ use App\Models\History;
 
 class RecommendationController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $problem = $request->problem;
-    //     $today = date('Y-m-d');
-    //     $patient = Auth::guard('patient')->user();
-        
-    //     if (!$problem) {
-    //         return view('patient.recommendation', compact('today', 'patient'));
-    //     }
-        
-    //     // Find matching specialties based on keywords
-    //     $specialties = Specialty::all()->filter(function($specialty) use ($problem) {
-    //         $keywords = strtolower($specialty->keywords);
-    //         $problemLower = strtolower($problem);
-    //         return str_contains($keywords, $problemLower);
-    //     });
-        
-    //     if ($specialties->isEmpty()) {
-    //         // Get all specialties if no match found
-    //         $specialties = Specialty::all();
-    //     }
-        
-    //     $specialtyIds = $specialties->pluck('id');
-    //     $doctors = Doctor::whereIn('specialties', $specialtyIds)->with('specialty')->get();
-        
-    //     // Save to history
-    //     History::create([
-    //         'user_id' => $patient->pid,
-    //         'problem' => $problem,
-    //         'matched_specialties' => $specialties->pluck('sname')->implode(', '),
-    //         'matched_specialties_ids' => $specialtyIds->implode(','),
-    //         'recommended_doctors' => $doctors->pluck('docid')->implode(',')
-    //     ]);
-        
-    //     return view('patient.recommendation', compact('doctors', 'specialties', 'problem', 'today', 'patient'));
-    // }
+    /**
+     * Calculate IDF values for all keywords.
+     */
     private function calculateIDF($specialties)
-{
-    $totalDocs = $specialties->count();
-    $df = [];
+    {
+        $totalDocs = $specialties->count();
+        $df = [];
 
-    foreach ($specialties as $specialty) {
-        $keywords = array_unique(
-            array_map('trim', explode(',', strtolower($specialty->keywords)))
+        foreach ($specialties as $specialty) {
+
+            $keywords = array_unique(
+                array_filter(
+                    array_map('trim', explode(',', strtolower($specialty->keywords)))
+                )
+            );
+
+            foreach ($keywords as $word) {
+                $df[$word] = ($df[$word] ?? 0) + 1;
+            }
+        }
+
+        $idf = [];
+
+        foreach ($df as $word => $count) {
+            $idf[$word] = log(($totalDocs + 1) / ($count + 1)) + 1;
+        }
+
+        return $idf;
+    }
+
+    /**
+     * Build TF-IDF vector.
+     */
+    private function buildTFIDFVector($words, $idf)
+    {
+        $tf = [];
+
+        foreach ($words as $word) {
+            $tf[$word] = ($tf[$word] ?? 0) + 1;
+        }
+
+        $totalWords = count($words);
+
+        foreach ($tf as $word => $count) {
+            $tf[$word] = ($count / $totalWords) * ($idf[$word] ?? 1);
+        }
+
+        return $tf;
+    }
+
+    /**
+     * Calculate Cosine Similarity.
+     */
+    private function cosineSimilarity($vectorA, $vectorB)
+    {
+        $dotProduct = 0;
+        $magnitudeA = 0;
+        $magnitudeB = 0;
+
+        $allWords = array_unique(
+            array_merge(array_keys($vectorA), array_keys($vectorB))
         );
 
-        foreach ($keywords as $word) {
-            if (!isset($df[$word])) {
-                $df[$word] = 0;
-            }
-            $df[$word]++;
+        foreach ($allWords as $word) {
+
+            $a = $vectorA[$word] ?? 0;
+            $b = $vectorB[$word] ?? 0;
+
+            $dotProduct += $a * $b;
+            $magnitudeA += pow($a, 2);
+            $magnitudeB += pow($b, 2);
         }
+
+        if ($magnitudeA == 0 || $magnitudeB == 0) {
+            return 0;
+        }
+
+        return $dotProduct / (sqrt($magnitudeA) * sqrt($magnitudeB));
     }
-
-    $idf = [];
-
-    foreach ($df as $word => $count) {
-        $idf[$word] = log(($totalDocs + 1) / ($count + 1)) + 1;
-    }
-
-    return $idf;
-}
 
     public function index(Request $request)
-{
-    $problem = $request->problem;
-    $today = date('Y-m-d');
-    $patient = Auth::guard('patient')->user();
+    {
+        $problem = $request->problem;
+        $today = date('Y-m-d');
+        $patient = Auth::guard('patient')->user();
 
-    if (!$problem) {
-        return view('patient.recommendation', compact('today', 'patient'));
-    }
-
-    $problemWords = array_unique(
-        array_filter(
-            explode(' ', strtolower($problem))
-        )
-    );
-
-    $specialties = Specialty::all()->map(function ($specialty) use ($problemWords) {
-
-        $keywords = array_map(
-            'trim',
-            explode(',', strtolower($specialty->keywords))
-        );
-
-        $score = 0;
-
-        foreach ($problemWords as $word) {
-            if (in_array($word, $keywords)) {
-                $score++;
-            }
+        if (!$problem) {
+            return view('patient.recommendation', compact('today', 'patient'));
         }
 
-        $specialty->score = $score;
+        // Patient input words
+        $problemWords = array_unique(
+            array_filter(
+                preg_split('/\s+/', strtolower($problem))
+            )
+        );
 
-        return $specialty;
-    })
-    ->filter(function ($specialty) {
-        return $specialty->score > 0;
-    })
-    ->sortByDesc('score');
+        // Get all specialties
+        $allSpecialties = Specialty::all();
 
-    // if ($specialties->isEmpty()) {
-    //     $specialties = Specialty::all()->map(function ($s) {
-    //         $s->score = 0;
-    //         return $s;
-    //     });
-    // }
+        // Calculate IDF
+        $idf = $this->calculateIDF($allSpecialties);
 
+        // Patient TF-IDF vector
+        $patientVector = $this->buildTFIDFVector($problemWords, $idf);
 
-    if ($specialties->isEmpty()) {
-      $doctors = collect();
-      return view(
-          'patient.recommendation',
-          compact('doctors', 'specialties', 'problem', 'today', 'patient')
-      )->with('message', 'No matching specialties found. Please try a different problem description.')  ;
+        // Calculate similarity for every specialty
+        $specialties = $allSpecialties->map(function ($specialty) use ($patientVector, $idf) {
+
+            $keywords = array_unique(
+                array_filter(
+                    array_map('trim', explode(',', strtolower($specialty->keywords)))
+                )
+            );
+
+            $specialtyVector = $this->buildTFIDFVector($keywords, $idf);
+
+            $specialty->score = $this->cosineSimilarity(
+                $patientVector,
+                $specialtyVector
+            );
+
+            return $specialty;
+
+        })->filter(function ($specialty) {
+
+            return $specialty->score > 0;
+
+        })->sortByDesc('score');
+
+        if ($specialties->isEmpty()) {
+
+            $doctors = collect();
+
+            return view(
+                'patient.recommendation',
+                compact(
+                    'doctors',
+                    'specialties',
+                    'problem',
+                    'today',
+                    'patient'
+                )
+            )->with(
+                'message',
+                'No matching specialties found. Please try a different problem description.'
+            );
+        }
+
+        $specialtyIds = $specialties->pluck('id');
+
+        $doctors = Doctor::whereIn('specialties', $specialtyIds)
+            ->with('specialty')
+            ->get();
+
+        History::create([
+            'user_id' => $patient->pid,
+            'problem' => $problem,
+            'matched_specialties' => $specialties->pluck('sname')->implode(', '),
+            'matched_specialties_ids' => $specialtyIds->implode(','),
+            'recommended_doctors' => $doctors->pluck('docid')->implode(',')
+        ]);
+
+        return view(
+            'patient.recommendation',
+            compact(
+                'doctors',
+                'specialties',
+                'problem',
+                'today',
+                'patient'
+            )
+        );
     }
-
-    $specialtyIds = $specialties->pluck('id');
-
-    $doctors = Doctor::whereIn('specialties', $specialtyIds)
-        ->with('specialty')
-        ->get();
-
-    History::create([
-        'user_id' => $patient->pid,
-        'problem' => $problem,
-        'matched_specialties' => $specialties->pluck('sname')->implode(', '),
-        'matched_specialties_ids' => $specialtyIds->implode(','),
-        'recommended_doctors' => $doctors->pluck('docid')->implode(',')
-    ]);
-
-    return view(
-        'patient.recommendation',
-        compact('doctors', 'specialties', 'problem', 'today', 'patient')
-    );
-}
 }

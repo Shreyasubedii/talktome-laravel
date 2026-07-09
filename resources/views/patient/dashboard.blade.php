@@ -36,7 +36,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}..</p>
+                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($patient->pemail, 22) }}</p>
                             </td>
                         </tr>
@@ -69,7 +69,7 @@
                     <a href="{{ route('patient.doctors') }}"
                         class="non-style-link-menu {{ Route::is('patient.doctors') ? 'non-style-link-menu-active' : '' }}">
                         <div>
-                            <p class="menu-text">All Doctors</p>
+                            <p class="menu-text">All Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -78,7 +78,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">Group Sessions</p>
+                            <p class="menu-text">Available Sessions</p>
                         </div>
                     </a>
                 </td>
@@ -161,11 +161,11 @@
                             <tr>
                                 <td>
                                     <h3>Welcome!</h3>
-                                    <h1>{{ $patient->pname }}.</h1>
-                                    <p>Haven't any idea about doctors? no problem let's jump to <a
+                                    <h1>{{ $patient->pname }}</h1>
+                                    <p>Haven't any idea about doctors? No problem, let's jump to <a
                                             href="{{ route('patient.doctors') }}" class="non-style-link"><b>"All
                                                 Doctors"</b></a> section.<br>
-                                        Track your past and future appointments history.<br>Also find out the expected
+                                        <br>Also find out the expected
                                         arrival time of your doctor or medical consultant.<br><br>
                                     </p>
                                     <h3>Confused which doctor to book? Channel a Doctor Here</h3>
@@ -183,7 +183,7 @@
                                             <a href="{{ route('patient.recommendation') }}"
                                                 class="login-btn btn-primary btn"
                                                 style="padding:10px 25px;text-decoration:none;display:inline-block;">
-                                                Get Recommendation.
+                                                Get Recommendation
                                             </a>
                                         </form>
                                         <br><br>
@@ -262,9 +262,9 @@
                                         <table width="85%" class="sub-table scrolldown" border="0">
                                             <thead>
                                                 <tr>
-                                                    <th class="table-headin">Appoint. Number</th>
+                                                    <th class="table-headin">Appointment Number</th>
                                                     <th class="table-headin">Session Title</th>
-                                                    <th class="table-headin">Doctor</th>
+                                                    <th class="table-headin">Therapists</th>
                                                     <th class="table-headin">Scheduled Date & Time</th>
                                                 </tr>
                                             </thead>
@@ -276,11 +276,17 @@
                                                     <td style="padding:20px;">
                                                         {{ Str::limit($appo->schedule?->title ?? 'Deleted Session', 30) }}
                                                     </td>
-                                                    <td>{{ Str::limit($appo->schedule?->doctor?->docname ?? 'Unknown', 20) }}
+                                                    <td>Dr. {{ Str::limit(ucwords($appo->schedule?->doctor?->docname ?? 'Unknown'), 20) }}
                                                     </td>
                                                     <td style="text-align:center;">
-                                                        {{ $appo->schedule?->scheduledate }}<br>{{ substr($appo->schedule?->scheduletime, 0, 5) }}
-                                                    </td>
+                                                         {{ $appo->schedule
+                                                           ? \Carbon\Carbon::parse($appo->schedule->scheduledate)->format('M d, Y')
+                                                            : 'N/A' }}
+                                                              <br>
+                                                               {{ $appo->schedule
+                                                                ? \Carbon\Carbon::parse($appo->schedule->start_time ?? $appo->schedule->scheduletime)->format('h:i A')
+                                                                  : 'N/A' }}
+                                                                </td>
                                                 </tr>
                                                 @empty
                                                 <tr>

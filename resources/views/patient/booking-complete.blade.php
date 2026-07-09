@@ -22,9 +22,13 @@
                 <br>
                 <div style="text-align: left; background: #f8f9fa; padding: 20px; border-radius: 5px;">
                     <p><b>Session:</b> {{ $appointment->schedule?->title }}</p>
-                    <p><b>Doctor:</b> Dr. {{ $appointment->schedule?->doctor?->docname }}</p>
-                    <p><b>Date:</b> {{ $appointment->schedule?->scheduledate }}</p>
-                    <p><b>Time:</b> {{ substr($appointment->schedule?->scheduletime, 0, 5) }}</p>
+                    <p><b>Doctor:</b> Dr. {{ ucwords($appointment->schedule?->doctor?->docname) }}</p>
+                    <p><b>Date:</b>
+                    {{ $appointment->schedule ? \Carbon\Carbon::parse($appointment->schedule->scheduledate)->format('M d, Y') : 'N/A' }}</p>
+                    
+                    <p><b>Time:</b>
+                    {{ $appointment->schedule
+                     ? \Carbon\Carbon::parse($appointment->schedule->start_time ?? $appointment->schedule->scheduletime)->format('h:i A') : 'N/A' }}</p>
                 </div>
                 <br>
                 <a href="{{ route('patient.appointments') }}" class="non-style-link"><button

@@ -26,4 +26,26 @@ class PatientController extends Controller
         
         return view('admin.patients', compact('patients', 'allPatients', 'today'));
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'tel' => 'required|string|max:20',
+            'dob' => 'required|date',
+            'nic' => 'required|string|max:20',
+        ]);
+
+        $patient = Patient::findOrFail($id);
+        $patient->update([
+            'pname' => $request->name,
+            'pemail' => $request->email,
+            'ptel' => $request->tel,
+            'pdob' => $request->dob,
+            'pnic' => $request->nic,
+        ]);
+
+        return back()->with('success', 'Patient updated successfully');
+    }
 }

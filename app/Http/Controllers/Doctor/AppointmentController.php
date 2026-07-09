@@ -22,7 +22,21 @@ class AppointmentController extends Controller
     
     public function destroy($id)
     {
-        Appointment::findOrFail($id)->delete();
+        $appointment = Appointment::findOrFail($id);
+        $schedule = $appointment->schedule;
+
+        $appointment->delete();
+
+        if ($schedule) {
+            $bookedCount = $schedule->appointments()->count();
+            $remainingCapacity = max($schedule->nop - $bookedCount, 0);
+            $schedule->update([
+                'remaining_capacity' => $remainingCapacity,
+                'is_full' => $remainingCapacity <= 0,
+                'status' => $remainingCapacity <= 0 ? 'full' : 'available',
+            ]);
+        }
+
         return back()->with('success', 'Appointment deleted');
     }
 }

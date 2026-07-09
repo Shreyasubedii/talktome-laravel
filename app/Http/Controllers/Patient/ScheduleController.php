@@ -15,7 +15,7 @@ class ScheduleController extends Controller
         $search = $request->search;
         $date = $request->scheduledate;
         
-        $query = Schedule::with('doctor.specialty')
+        $query = Schedule::with('doctor.specialty', 'appointments')
             ->where('scheduledate', '>=', now()->toDateString());
             
         if ($search) {
@@ -31,7 +31,11 @@ class ScheduleController extends Controller
             $query->where('scheduledate', $date);
         }
         
-        $schedules = $query->orderBy('scheduledate')->orderBy('scheduletime')->get();
+        $schedules = $query->orderBy('scheduledate')->orderBy('scheduletime')->get()
+            ->filter(function ($schedule) {
+                return $schedule->status === 'available' && ! $schedule->is_full && $schedule->remaining_capacity > 0;
+            })
+            ->values();
         $today = date('Y-m-d');
         $patient = Auth::guard('patient')->user();
         

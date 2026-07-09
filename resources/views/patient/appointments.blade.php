@@ -29,7 +29,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}..</p>
+                                <p class="profile-title">{{ Str::limit($patient->pname, 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($patient->pemail, 22) }}</p>
                             </td>
                         </tr>
@@ -58,7 +58,7 @@
                 <td class="menu-btn menu-icon-doctor">
                     <a href="{{ route('patient.doctors') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">All Doctors</p>
+                            <p class="menu-text">All Therapists</p>
                         </div>
                     </a>
                 </td>
@@ -67,7 +67,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('patient.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">Group Sessions</p>
+                            <p class="menu-text">Available Sessions</p>
                         </div>
                     </a>
                 </td>
@@ -133,7 +133,7 @@
                         </button></a>
                 </td>
                 <td>
-                    <p style="font-size: 23px;padding-left:12px;font-weight: 600;">My Booking history</p>
+                    <p style="font-size: 23px;padding-left:12px;font-weight: 600;">My booking history</p>
                 </td>
                 <td width="15%">
                     <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's
@@ -177,16 +177,20 @@
                                                             {{ str_pad($appo->apponum, 2, '0', STR_PAD_LEFT) }}</div>
                                                     </div>
                                                     <div class="h3-search">
-                                                        {{ $appo->schedule?->doctor?->docname ?? 'Unknown Doctor' }}
+                                                        <strong>Dr. {{ ucwords($appo->schedule?->doctor?->docname ?? 'Unknown Doctor') }}</strong>
                                                     </div>
+
                                                     <div class="h4-search">
                                                         Scheduled Date:
-                                                        {{ $appo->schedule?->scheduledate ?? 'N/A' }}<br>Starts: <b>@
-                                                            {{ $appo->schedule ? substr($appo->schedule->scheduletime, 0, 5) : 'N/A' }}</b>
-                                                        (24h)
-                                                    </div>
+                                                        {{ $appo->schedule ? \Carbon\Carbon::parse($appo->schedule->scheduledate)->format('M d, Y') : 'N/A' }}
+                                                        <br>
+                                                         Starts:
+                                                         <b>
+                                                            {{ $appo->schedule ? \Carbon\Carbon::parse($appo->schedule->start_time ?? $appo->schedule->scheduletime)->format('h:i A') : 'N/A' }}
+                                                         </b>
+                                                        </div>
                                                     <br>
-                                                    <form
+                                                    <!-- <form
                                                         action="{{ route('patient.appointments.destroy', $appo->appoid) }}"
                                                         method="POST">
                                                         @csrf @method('DELETE')
@@ -194,7 +198,38 @@
                                                             style="padding-top:11px;padding-bottom:11px;width:100%">
                                                             <font class="tn-in-text">Cancel Booking</font>
                                                         </button>
-                                                    </form>
+                                                    </form> -->
+                                                    
+                                                    @php
+                                                     $appointmentDateTime = $appo->schedule->scheduledate->copy();
+                                                      $appointmentDateTime->setTimeFromTimeString(
+                                                          $appo->schedule->start_time ?? $appo->schedule->scheduletime
+                                                           );
+                                                            $canCancel = now()->lt(
+                                                                 $appointmentDateTime->copy()->subDay()
+                                                                 );
+                                                                 @endphp
+                                                                 
+                                                                 @if($canCancel)
+                                                                  <form action="{{ route('patient.appointments.destroy', $appo->appoid) }}" method="POST">
+                                                                      @csrf
+                                                                       @method('DELETE')
+                                                                         <button class="login-btn btn-primary-soft btn"
+                                                                          style="padding-top:11px;padding-bottom:11px;width:100%">
+                                                                            <font class="tn-in-text">Cancel Booking</font>
+                                                                          </button>
+                                                                        </form>
+                                                                        
+                                                                        @else
+                                                                        <button class="login-btn btn-primary-soft btn"
+                                                                         style="padding-top:11px;padding-bottom:11px;width:100%;background:#ccc;cursor:not-allowed;"
+                                                                          disabled>
+                                                                           <font class="tn-in-text">Cancellation Closed</font>
+                                                                         </button>
+                                                                         <small style="color:red;">
+                                                                            Cancellation is not allowed within 24 hours of the appointment.
+                                                                        </small>
+                                                                        @endif
                                                 </div>
                                             </div>
                                         </td>

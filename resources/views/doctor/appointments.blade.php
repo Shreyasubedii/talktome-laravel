@@ -29,7 +29,7 @@
                                 <img src="{{ asset('img/user.png') }}" alt="" width="100%" style="border-radius:50%">
                             </td>
                             <td style="padding:0px;margin:0px;">
-                                <p class="profile-title">{{ Str::limit($doctor->docname, 13) }}..</p>
+                                <p class="profile-title">Dr. {{ Str::limit(ucwords($doctor->docname), 13) }}</p>
                                 <p class="profile-subtitle">{{ Str::limit($doctor->docemail, 22) }}</p>
                             </td>
                         </tr>
@@ -67,7 +67,7 @@
                 <td class="menu-btn menu-icon-session">
                     <a href="{{ route('doctor.schedules') }}" class="non-style-link-menu">
                         <div>
-                            <p class="menu-text">My Sessions</p>
+                            <p class="menu-text">My Availability</p>
                         </div>
                     </a>
                 </td>
@@ -159,7 +159,7 @@
                                         <th class="table-headin">Patient name</th>
                                         <th class="table-headin">Appointment number</th>
                                         <th class="table-headin">Session Title</th>
-                                        <th class="table-headin">Session Date & Time</th>
+                                        <th class="table-headin">Session Time</th>
                                         <th class="table-headin">Appointment Date</th>
                                         <th class="table-headin">Events</th>
                                     </tr>
@@ -174,9 +174,10 @@
                                             {{ $appointment->apponum }}</td>
                                         <td>{{ Str::limit($appointment->schedule?->title ?? 'Deleted Session', 15) }}
                                         </td>
-                                        <td style="text-align:center;">
-                                            {{ $appointment->schedule?->scheduledate ?? 'N/A' }} @
-                                            {{ $appointment->schedule ? substr($appointment->schedule->scheduletime, 0, 5) : 'N/A' }}
+                                        <td style="display:flex;justify-content: center;">
+                                            <!-- {{ $appointment->schedule?->scheduledate ?? \Carbon\Carbon::now()->format('M d, Y') }} -->
+                                            <br>
+                                            {{ $appointment->schedule ? \Carbon\Carbon::parse($appointment->schedule->scheduletime)->format('h:i A') : '' }}
                                         </td>
                                         <td style="text-align:center;">{{ $appointment->appodate }}</td>
                                         <td>
