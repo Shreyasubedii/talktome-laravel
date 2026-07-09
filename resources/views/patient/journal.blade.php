@@ -421,8 +421,24 @@
 
             @endif
 
+            <!-- chart update -->
 
+            @if(count($chartLabels))
 
+            <div class="dashboard-items daylog-card" style="margin-top:30px;
+            width:95%;
+            max-width:1100px;
+            padding:30px;">
+
+                <h2>Emotion Change Over Time</h2>
+
+                <br>
+
+                <canvas id="emotionChart" height="100"></canvas>
+
+            </div>
+
+            @endif
             {{-- JOURNAL HISTORY --}}
             @if($journals->count())
 
@@ -631,5 +647,120 @@ align-items:center;
         }
     };
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    @if(count($chartLabels))
+
+    <script>
+    const chartLabels = @json($chartLabels);
+    const confidenceData = @json($confidenceData);
+    const pointColors = @json($pointColors);
+    const emotionNames = @json($emotionNames);
+
+    const emotionColors = {
+        joy: "#FFD54F",
+        sadness: "#42A5F5",
+        anger: "#EF5350",
+        fear: "#AB47BC",
+        nervousness: "#FF7043",
+        disappointment: "#8D6E63",
+        admiration: "#26A69A",
+        love: "#EC407A",
+        gratitude: "#66BB6A",
+        neutral: "#90A4AE"
+    };
+
+
+
+    new Chart(document.getElementById('emotionChart'), {
+
+        type: 'line',
+
+        data: {
+            labels: chartLabels,
+
+            datasets: [{
+                label: 'Primary Emotion Confidence (%)',
+
+                data: confidenceData,
+
+                borderColor: '#4A90E2',
+
+                borderWidth: 3,
+
+                tension: 0.35,
+
+                fill: false,
+
+                pointRadius: 7,
+
+                pointHoverRadius: 9,
+
+                pointBackgroundColor: pointColors,
+
+                pointBorderColor: '#ffffff',
+
+                pointBorderWidth: 2
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        title: function(context) {
+                            return chartLabels[context[0].dataIndex];
+
+                        },
+                        label: function(context) {
+
+                            return [
+                                "Emotion: " + emotionNames[context.dataIndex],
+                                "Confidence: " + context.raw + "%"
+                            ];
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Confidence (%)'
+                    }
+                },
+
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Journal Date'
+                    }
+                }
+
+            }
+
+        }
+
+    });
+    </script>
+    @endif
 
     @endsection

@@ -30,18 +30,26 @@ def analyze_emotion(data: JournalRequest):
         reverse=True
     )
 
-    top_two = sorted_results[:2]
+    # Keep the top 5 emotions
+    top_five = sorted_results[:5]
 
     emotion_scores = {}
 
-    for item in top_two:
+    for item in top_five:
         emotion_scores[item["label"]] = round(
             item["score"] * 100,
             2
         )
 
+    # return {
+    #     "primary_emotion": top_five[0]["label"],
+    #     "secondary_emotion": top_five[1]["label"],
+    #     "emotion_scores": emotion_scores
+    # }
+
     return {
-        "primary_emotion": top_two[0]["label"],
-        "secondary_emotion": top_two[1]["label"],
-        "emotion_scores": emotion_scores
-    }
+    "primary_emotion": top_five[0]["label"],
+    "secondary_emotion": top_five[1]["label"],
+    "confidence": round(top_five[0]["score"] * 100, 2),
+    "emotion_scores": emotion_scores
+}

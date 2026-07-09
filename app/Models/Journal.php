@@ -12,6 +12,7 @@ class Journal extends Model
         'word_count',
         'primary_emotion',
         'secondary_emotion',
+        'confidence',
         'emotion_scores',
         'journal_date'
     ];

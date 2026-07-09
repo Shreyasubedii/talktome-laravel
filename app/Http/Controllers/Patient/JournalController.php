@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\Models\Journal;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -236,22 +237,91 @@ public function index()
 
     $today = Carbon::now()->format('Y-m-d');
 
+    // $journals = Journal::where(
+    //     'patient_id',
+    //     $patient->pid
+    // )->latest()->get();
+
+    // $latestJournal = $journals->first();
+
     $journals = Journal::where(
-        'patient_id',
-        $patient->pid
-    )->latest()->get();
+    'patient_id',
+    $patient->pid
+)
+->orderBy('journal_date', 'asc')
+->get();
 
-    $latestJournal = $journals->first();
+$latestJournal = $journals->last();
 
-    return view(
-        'patient.journal',
-        compact(
-            'patient',
-            'today',
-            'journals',
-            'latestJournal'
-        )
-    );
+
+$chartLabels = [];
+$confidenceData = [];
+$pointColors = [];
+$emotionNames = [];
+
+$emotionColors = [
+
+    'joy' => '#FFD54F',
+    'amusement' => '#FFE082',
+    'admiration' => '#64B5F6',
+    'approval' => '#4CAF50',
+    'gratitude' => '#81C784',
+
+    'love' => '#EC407A',
+    'caring' => '#F48FB1',
+
+    'sadness' => '#5C6BC0',
+    'grief' => '#3949AB',
+    'disappointment' => '#7986CB',
+    'remorse' => '#9575CD',
+
+    'anger' => '#E53935',
+    'annoyance' => '#EF5350',
+    'disgust' => '#8D6E63',
+    'disapproval' => '#D84315',
+
+    'fear' => '#FB8C00',
+    'nervousness' => '#FFA726',
+
+    'confusion' => '#AB47BC',
+    'realization' => '#7E57C2',
+    'curiosity' => '#26A69A',
+
+    'optimism' => '#66BB6A',
+    'relief' => '#26C6DA',
+    'excitement' => '#FFCA28',
+
+    'neutral' => '#90A4AE'
+];
+
+foreach ($journals as $journal) {
+
+    $chartLabels[] = $journal->journal_date;
+
+    $confidenceData[] = $journal->confidence;
+
+    $emotion = strtolower($journal->primary_emotion);
+    $emotionNames[] = $journal->primary_emotion;
+
+
+    $pointColors[] =
+        $emotionColors[$emotion] ?? '#607D8B';
+}
+
+    
+  return view(
+    'patient.journal',
+    compact(
+        'patient',
+        'today',
+        'journals',
+        'latestJournal',
+        'chartLabels',
+        'confidenceData',
+        'pointColors',
+        'emotionNames'
+    )
+);
 }
 public function store(Request $request)
 {
@@ -261,10 +331,26 @@ public function store(Request $request)
 
     $patient = Auth::guard('patient')->user();
 
-    $analysis =
-        $this->analyzeJournal(
-            $request->journal_text
-        );
+    // $analysis =
+    //     $this->analyzeJournal(
+    //         $request->journal_text
+    //     );
+    $response = Http::post(
+    'http://127.0.0.1:8000/analyze',
+    [
+        'text' => $request->journal_text
+    ]
+);
+
+if ($response->failed()) {
+
+    return back()->with(
+        'error',
+        'Emotion analysis service unavailable.'
+    );
+}
+
+$analysis = $response->json();
 
     Journal::create([
 
@@ -278,15 +364,27 @@ public function store(Request $request)
                 $request->journal_text
             ),
 
-        'primary_emotion' =>
-            $analysis['primary'],
+            // added later
 
-        'secondary_emotion' =>
-            $analysis['secondary'],
+            'confidence' =>
+                $analysis['confidence'],
 
-        'emotion_scores' =>
-            $analysis['scores'],
+        // 'primary_emotion' =>
+        //     $analysis['primary'],
 
+        // 'secondary_emotion' =>
+        //     $analysis['secondary'],
+
+        // 'emotion_scores' =>
+        //     $analysis['scores'],
+'primary_emotion' =>
+    $analysis['primary_emotion'],
+
+'secondary_emotion' =>
+    $analysis['secondary_emotion'],
+
+'emotion_scores' =>
+    $analysis['emotion_scores'],
         'journal_date' =>
             Carbon::now()->format('Y-m-d')
     ]);
