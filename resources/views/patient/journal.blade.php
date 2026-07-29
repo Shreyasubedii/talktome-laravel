@@ -415,93 +415,153 @@
 
                 @endforeach
 
-            </div>
-
-            @endif
-
-            @endif
-
-            <!-- chart update -->
-
-            @if(count($chartLabels))
-
-            <div class="dashboard-items daylog-card" style="margin-top:30px;
-            width:95%;
-            max-width:1100px;
-            padding:30px;">
-
-                <h2>Emotion Change Over Time</h2>
-
-                <br>
-
-                <canvas id="emotionChart" height="100"></canvas>
 
             </div>
 
             @endif
-            {{-- JOURNAL HISTORY --}}
-            @if($journals->count())
 
-            <div class="dashboard-items daylog-card" style="
-        margin-top:30px;
-        width:95%;
-        max-width:1100px;
-        padding:30px;
-     ">
+            @endif
 
-                <h2>Previous Journal Entries</h2>
 
-                <br>
 
-                @foreach($journals as $journal)
+ <!-- upgraded journal history section -->
+{{-- JOURNAL HISTORY --}}
 
-                <div style="
+
+<div class="dashboard-items daylog-card"
+    style="margin-top:30px;width:95%;max-width:1100px;padding:30px;">
+
+
+    <!-- SEARCH BY DATE FUNCTION -->
+     <form method="GET"
+      action="{{ route('patient.journal') }}"
+      style="margin-bottom:25px;display:flex;gap:10px;align-items:center;">
+
+    <input
+        type="date"
+        name="date"
+        value="{{ request('date') }}"
+        class="input-text">
+
+    <button
+        class="btn-primary btn"
+        type="submit">
+
+        Search
+
+    </button>
+
+    @if(request('date'))
+
+        <a
+            href="{{ route('patient.journal') }}"
+            class="btn-primary-soft btn">
+
+            Clear
+
+        </a>
+
+    @endif
+
+</form>
+
+@if(request('date') && $journals->isEmpty())
+
+<div style="
+    background:#fff8e6;
+    border:1px solid #ffe39a;
+    color:#8a6d3b;
+    padding:16px 20px;
+    border-radius:12px;
+    margin-bottom:25px;
+">
+
+    📖 No journal entry found for
+    <strong>{{ \Carbon\Carbon::parse(request('date'))->format('d M Y') }}</strong>.
+
+</div>
+
+@endif
+
+
+@if($journals->isNotEmpty())
+    <h2>Previous Journal Entries</h2>
+    <br>
+
+    @foreach($journals as $index => $journal)
+
+    <div class="journal-entry"
+        style="
         border:1px solid #eee;
         border-radius:12px;
         padding:20px;
         margin-bottom:20px;
         text-align:left;
-    ">
-
-                    <div style="
-            display:flex;
-            justify-content:space-between;
-            flex-wrap:wrap;
+        {{ $index >= 5 ? 'display:none;' : '' }}
         ">
 
-                        <strong>
-                            {{ $journal->journal_date }}
-                        </strong>
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
 
-                        <span>
-                            {{ $journal->primary_emotion }}
-                        </span>
+            <strong>{{ $journal->journal_date }}</strong>
 
-                    </div>
+            <span>{{ $journal->primary_emotion }}</span>
 
-                    <br>
+        </div>
 
-                    <p style="line-height:1.8;color:#555;">
-                        {{ Str::limit($journal->journal_text, 180) }}
-                    </p>
+        <br>
 
-                    <button class="btn-primary-soft btn" style="margin-top:15px;" onclick="openJournalModal(
-        '{{ $journal->id }}',
-        `{{ addslashes($journal->journal_text) }}`,
-        '{{ $journal->journal_date }}',
-        '{{ $journal->primary_emotion }}',
-        '{{ $journal->secondary_emotion }}'
-    )">
-                        View Entry
-                    </button>
+        <p style="line-height:1.8;color:#555;">
+            {{ Str::limit($journal->journal_text,180) }}
+        </p>
 
-                </div>
+        <button class="btn-primary-soft btn"
+            style="margin-top:15px;"
+            onclick="openJournalModal(
+                '{{ $journal->id }}',
+                `{{ addslashes($journal->journal_text) }}`,
+                '{{ $journal->journal_date }}',
+                '{{ $journal->primary_emotion }}',
+                '{{ $journal->secondary_emotion }}'
+            )">
 
-                @endforeach
+            View Entry
 
-            </div>
+        </button>
 
-            @endif
+    </div>
+
+    @endforeach
+
+    @if($journals->count() > 5)
+
+    <center>
+
+        <button id="loadMoreBtn"
+            class="btn-primary-soft btn"
+            onclick="showMoreJournals()">
+
+            Load More...
+
+        </button>
+
+        <button id="showLessBtn"
+            class="btn-primary-soft btn"
+            style="display:none;"
+            onclick="showLessJournals()">
+
+            Show Less
+
+        </button>
+
+    </center>
+
+    @endif
+    @endif
+
+</div>
+
+
+
 
         </center>
 
@@ -637,6 +697,32 @@ align-items:center;
         document.getElementById('journalModal').style.display =
             'none';
     }
+
+
+    // added for loading and unloading more journal entry
+
+    function showMoreJournals() {
+
+    document.querySelectorAll('.journal-entry')
+        .forEach(entry => entry.style.display = 'block');
+
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    document.getElementById('showLessBtn').style.display = 'inline-block';
+}
+
+function showLessJournals() {
+
+    document.querySelectorAll('.journal-entry')
+        .forEach((entry, index) => {
+
+            entry.style.display =
+                index < 5 ? 'block' : 'none';
+
+        });
+
+    document.getElementById('loadMoreBtn').style.display = 'inline-block';
+    document.getElementById('showLessBtn').style.display = 'none';
+}
 
     window.onclick = function(event) {
         const modal =

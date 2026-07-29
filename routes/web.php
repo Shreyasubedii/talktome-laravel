@@ -23,6 +23,12 @@ use App\Http\Controllers\Patient\SettingsController as PatientSettingsController
 use App\Http\Controllers\Patient\DayLogController as DayLogController;
 use App\Http\Controllers\Patient\JournalController;
 
+// added for insight
+use App\Http\Controllers\Patient\ReportController;
+
+Route::get('/therapist-report', [ReportController::class, 'generate'])
+    ->name('patient.report');
+
 // Public routes
 Route::get('/', function () {
     return redirect()->route('welcome');

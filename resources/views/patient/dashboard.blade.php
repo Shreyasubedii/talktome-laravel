@@ -10,16 +10,511 @@
 
 <style>
 .dashbord-tables {
-    animation: transitionIn-Y-over 0.5s;
+    animation: transitionIn-Y-over .5s;
 }
 
 .filter-container {
-    animation: transitionIn-Y-bottom 0.5s;
+    animation: transitionIn-Y-bottom .5s;
 }
 
 .sub-table,
 .anime {
-    animation: transitionIn-Y-bottom 0.5s;
+    animation: transitionIn-Y-bottom .5s;
+}
+
+
+/* =======================================================
+   Emotional Insight Card
+=======================================================*/
+
+/* Card */
+
+.insight-card {
+    width: 95%;
+    margin: 30px auto;
+    padding: 35px;
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .06);
+}
+
+
+
+/* Header */
+
+.insight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.insight-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1d1d1f;
+}
+
+
+
+/* Segmented Control */
+
+.period-tabs {
+    display: flex;
+    background: #f3f3f5;
+    padding: 5px;
+    border-radius: 30px;
+    gap: 5px;
+}
+
+.period-btn {
+    text-decoration: none;
+    color: #666;
+    padding: 8px 18px;
+    border-radius: 20px;
+    transition: .25s;
+    font-weight: 600;
+}
+
+.period-btn.active {
+    background: white;
+    color: #007AFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+}
+
+
+
+/* Top */
+
+.summary-top {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+
+    margin-bottom: 35px;
+
+}
+
+.summary-item {
+
+    background: #f7f7f8;
+
+    padding: 30px;
+
+    border-radius: 22px;
+
+}
+
+.summary-label {
+
+    color: #6e6e73;
+
+    font-size: 15px;
+
+}
+
+.summary-value {
+
+    font-size: 42px;
+
+    font-weight: 700;
+
+    margin: 10px 0;
+
+    color: #1d1d1f;
+
+}
+
+.summary-subtitle {
+
+    color: #8a8a8f;
+
+}
+
+
+
+/* Sections */
+
+.insight-section {
+
+    margin-top: 35px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #ececec;
+
+}
+
+.insight-section h3 {
+
+    margin-bottom: 15px;
+
+}
+
+.insight-section p {
+
+    color: #555;
+
+    line-height: 1.8;
+
+}
+
+
+
+/* Graph Placeholder */
+
+.trend-placeholder {
+
+    height: 90px;
+
+    background: #f7f7f8;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: #888;
+
+}
+
+
+
+/* Trigger Cards */
+
+.trigger-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+
+    margin-top: 35px;
+
+}
+
+.trigger-card {
+
+    background: #f7f7f8;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+}
+
+.trigger-chip {
+
+    display: inline-block;
+
+    margin: 6px;
+
+    padding: 8px 16px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+.trigger-chip.negative {
+
+    background: #FFF1F1;
+
+    color: #D84040;
+
+}
+
+.trigger-chip.positive {
+
+    background: #EEF9F1;
+
+    color: #2E8B57;
+
+}
+
+
+
+/* Footer */
+
+.insight-footer {
+
+    margin-top: 40px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #ececec;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+.report-btn {
+
+    border: none;
+
+    background: #007AFF;
+
+    color: white;
+
+    padding: 14px 28px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+}
+
+.report-btn:hover {
+    background: #0062c3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 113, 227, .25);
+}
+
+#moodChart {
+    width: 100% !important;
+    height: 280px !important;
+}
+
+.chart-container {
+
+    position: relative;
+
+    height: 250px;
+
+    width: 100%;
+
+    margin-top: 20px;
+
+}
+
+.summary-box.chart-box {
+
+    grid-column: 1 / span 2;
+
+    background: white;
+
+    border-radius: 24px;
+
+    padding: 24px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, .05);
+
+}
+
+/* report section */
+    .report-download-card{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-top:35px;
+
+padding:25px 30px;
+
+background:#f8fafc;
+
+border:1px solid #e5e7eb;
+
+border-radius:18px;
+
+}
+
+.report-download-info h3{
+
+margin:0;
+
+font-size:20px;
+
+font-weight:700;
+
+color:#1f2937;
+
+}
+
+.report-download-info p{
+
+margin:10px 0;
+
+color:#6b7280;
+
+line-height:1.6;
+
+max-width:520px;
+
+}
+
+.report-download-info span{
+
+font-size:14px;
+
+font-weight:600;
+
+color:#4b5563;
+
+}
+
+.download-btn{
+
+background:#5b7cff;
+
+color:white;
+
+padding:14px 26px;
+
+border-radius:12px;
+
+text-decoration:none;
+
+font-weight:600;
+
+transition:.25s;
+
+box-shadow:0 8px 20px rgba(91,124,255,.25);
+
+}
+
+.download-btn:hover{
+
+background:#4769ee;
+
+transform:translateY(-2px);
+
+color:white;
+
+text-decoration:none;
+
+}
+
+/* report section */
+
+.report-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:18px;
+
+}
+
+.table-card{
+
+background:white;
+
+border-radius:16px;
+
+overflow:hidden;
+
+border:1px solid #edf2f7;
+
+box-shadow:0 6px 18px rgba(0,0,0,.05);
+
+}
+
+.reflection-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+.reflection-table thead{
+
+background:#5B7CFF;
+
+color:white;
+
+}
+
+.reflection-table th{
+
+padding:15px;
+
+font-size:14px;
+
+font-weight:600;
+
+text-align:left;
+
+}
+
+.reflection-table td{
+
+padding:15px;
+
+border-bottom:1px solid #edf2f7;
+
+font-size:14px;
+
+color:#374151;
+
+}
+
+.reflection-table tbody tr:nth-child(even){
+
+background:#fafcff;
+
+}
+
+.reflection-table tbody tr:hover{
+
+background:#f4f7ff;
+
+transition:.2s;
+
+}
+
+.table-responsive{
+
+overflow-x:auto;
+
+}
+
+
+/* Mobile */
+
+@media(max-width:900px) {
+
+    .insight-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insight-footer {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    
 }
 </style>
 @endsection
@@ -276,17 +771,18 @@
                                                     <td style="padding:20px;">
                                                         {{ Str::limit($appo->schedule?->title ?? 'Deleted Session', 30) }}
                                                     </td>
-                                                    <td>Dr. {{ Str::limit(ucwords($appo->schedule?->doctor?->docname ?? 'Unknown'), 20) }}
+                                                    <td>Dr.
+                                                        {{ Str::limit(ucwords($appo->schedule?->doctor?->docname ?? 'Unknown'), 20) }}
                                                     </td>
                                                     <td style="text-align:center;">
-                                                         {{ $appo->schedule
+                                                        {{ $appo->schedule
                                                            ? \Carbon\Carbon::parse($appo->schedule->scheduledate)->format('M d, Y')
                                                             : 'N/A' }}
-                                                              <br>
-                                                               {{ $appo->schedule
+                                                        <br>
+                                                        {{ $appo->schedule
                                                                 ? \Carbon\Carbon::parse($appo->schedule->start_time ?? $appo->schedule->scheduletime)->format('h:i A')
                                                                   : 'N/A' }}
-                                                                </td>
+                                                    </td>
                                                 </tr>
                                                 @empty
                                                 <tr>
@@ -312,6 +808,446 @@
                 </td>
             </tr>
         </table>
-    </div>
+
+        <!-- added for emotional insight -->
+
+            <div class="insight-card">
+
+                <div class="insight-header">
+
+                    <div class="insight-title">
+                        My Emotional Insights
+                    </div>
+
+                    <div class="period-tabs">
+
+                        <a href="{{ route('patient.dashboard',['period'=>'W']) }}"
+                            class="period-btn {{ $period=='W' ? 'active':'' }}">
+                            W
+                        </a>
+
+                        <a href="{{ route('patient.dashboard',['period'=>'M']) }}"
+                            class="period-btn {{ $period=='M' ? 'active':'' }}">
+                            M
+                        </a>
+
+                        <a href="{{ route('patient.dashboard',['period'=>'6M']) }}"
+                            class="period-btn {{ $period=='6M' ? 'active':'' }}">
+                            6M
+                        </a>
+
+                        <a href="{{ route('patient.dashboard',['period'=>'Y']) }}"
+                            class="period-btn {{ $period=='Y' ? 'active':'' }}">
+                            Y
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- Top Summary -->
+
+                <div class="summary-top">
+
+                    <div class="summary-item">
+
+                        <div class="summary-label">
+                            Average Mood
+                        </div>
+
+                        <div class="summary-value">
+                            {{ number_format($averageMood,1) }}/10
+                        </div>
+
+                        <div class="summary-subtitle">
+                            {{ $entryCount }} reflections analysed
+                        </div>
+
+                    </div>
+
+                    <div class="summary-item">
+
+                        <div class="summary-label">
+                            Most Common Emotion
+                        </div>
+
+                        <div class="summary-value">
+                            {{ $topEmotion }}
+                        </div>
+
+                        <div class="summary-subtitle">
+                            {{ $bestDay }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+<div class="insight-section">
+
+@if($period == 'W')
+
+<h3>Weekly Reflection Report</h3>
+
+<p class="summary-subtitle">
+    {{ \Carbon\Carbon::parse($selectedWeek)->format('d M Y') }}
+    -
+    {{ \Carbon\Carbon::parse($selectedWeek)->copy()->addDays(6)->format('d M Y') }}
+</p>
+        <!-- <table class="table table-bordered"> -->
+
+<div class="table-card">
+
+<div class="table-responsive">
+
+<table class="reflection-table">
+
+            <thead>
+
+            <tr>
+
+                <th>Date</th>
+
+                <th>Day</th>
+
+                <th>Primary Emotions</th>
+
+                <th>Possible Triggers</th>
+
+                <th>Reflection status</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            @foreach($reportRows ?? [] as $row)
+
+                <tr>
+
+                    <td>{{ $row['date'] }}</td>
+
+                    <td>{{ $row['day'] }}</td>
+
+                    <td>{{ $row['primary_emotions'] }}</td>
+
+                    <td>{{ $row['possible_triggers'] }}</td>
+
+                    <td>{{ $row['reflection_status'] }}</td>
+
+                </tr>
+
+            @endforeach
+
+            </tbody>
+
+        </table>
+        </div>
 </div>
+
+   @elseif($period == 'M')
+
+<!-- <h3>Monthly Reflection Report</h3>
+
+<p class="summary-subtitle">
+Last 30 Days Overview
+</p> -->
+
+<div class="report-header">
+
+    <div>
+
+        <h3>Monthly Reflection Report</h3>
+
+        <p class="summary-subtitle">
+            {{ \Carbon\Carbon::parse($selectedWeek)->format('d M Y') }}
+            -
+            {{ \Carbon\Carbon::parse($selectedWeek)->copy()->addDays(6)->format('d M Y') }}
+        </p>
+
+    </div>
+
+</div>
+
+<div class="table-card">
+
+    <div class="table-responsive">
+
+<table class="reflection-table">
+    <thead>
+
+        <tr>
+
+            <th>Week</th>
+
+            <th>Average Mood</th>
+
+            <th>Dominant Emotion</th>
+
+            <th>Main Trigger</th>
+
+            <th>Reflection Completion</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach($reportRows ?? [] as $row)
+        <tr>
+
+            <td>{{ $row['week'] }}</td>
+
+            <td>{{ $row['average_mood'] }}</td>
+
+            <td>{{ ucfirst($row['emotion']) }}</td>
+
+            <td>{{ ucfirst($row['trigger']) }}</td>
+
+            <td>{{ $row['completion'] }}</td>
+
+        </tr>
+
+    @endforeach
+
+    </tbody>
+
+</table>
+        </div>
+    </div>
+
+   @elseif($period == '6M')
+
+<h3>Six Month Reflection Report</h3>
+
+<p class="summary-subtitle">
+Last 6 Months Overview
+</p>
+
+<div class="table-card">
+    <div class="table-responsive">
+
+<table class="reflection-table">
+
+    <thead>
+
+        <tr>
+
+            <th>Month</th>
+
+            <th>Average Mood</th>
+
+            <th>Dominant Emotions</th>
+
+            <th>Main Trigger</th>
+
+            <th>Reflection Habit</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    @foreach($reportRows as $row)
+
+        <tr>
+
+            <td>{{ $row['month'] }}</td>
+
+            <td>{{ $row['average_mood'] }}</td>
+
+            <td>{{ $row['emotion'] }}</td>
+
+            <td>{{ ucfirst($row['trigger']) }}</td>
+
+            <td>{{ $row['completion'] }}</td>
+
+        </tr>
+
+    @endforeach
+
+    </tbody>
+
+</table>
+        </div>
+    </div>
+
+    @else
+
+       <h3>Yearly Reflection Report</h3>
+
+<p class="summary-subtitle">
+Last 12 Months Overview
+</p>
+
+
+<div class="table-card">
+
+    <div class="table-responsive">
+
+<table class="reflection-table">
+
+<thead>
+
+<tr>
+
+<th>Period</th>
+
+<th>Average Mood</th>
+
+<th>Dominant Emotions</th>
+
+<th>Main Triggers</th>
+
+<th>Reflections</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+@foreach($reportRows as $row)
+
+<tr>
+
+<td>{{ $row['period'] }}</td>
+
+<td>{{ $row['average_mood'] }}</td>
+
+<td>{{ $row['emotions'] }}</td>
+
+<td>{{ $row['triggers'] }}</td>
+
+<td>{{ $row['reflections'] }}</td>
+
+</tr>
+
+@endforeach
+
+</tbody>
+
+</table>
+        </div>
+    </div>
+    @endif
+
+</div>
+
+                <!-- Mood Trend -->
+
+
+
+                <!-- Emotional Story -->
+
+                <div class="insight-section">
+
+                    <h3>Your Emotional Story</h3>
+
+                    <p>
+
+                        {{ $pattern }}
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- Trigger Section -->
+
+                <!-- <div class="trigger-grid">
+
+                    <div class="trigger-card">
+
+                        <h3>⚠ Frequently Linked with Difficult Emotions</h3>
+
+                        @forelse($negativeTriggers as $trigger)
+
+                        <span class="trigger-chip negative">
+
+                            {{ $trigger }}
+
+                        </span>
+
+                        @empty
+
+                        <span class="trigger-chip">
+
+                            No clear pattern yet
+
+                        </span>
+
+                        @endforelse
+
+                    </div> -->
+
+
+
+                    <!-- <div class="trigger-card">
+
+                        <h3> Frequently Linked with Positive Emotions</h3>
+
+                        @forelse($positiveTriggers as $trigger)
+
+                        <span class="trigger-chip positive">
+
+                            {{ $trigger }}
+
+                        </span>
+
+                        @empty
+
+                        <span class="trigger-chip">
+
+                            No clear pattern yet
+
+                        </span>
+
+                        @endforelse
+
+                    </div>
+
+                </div> -->
+
+
+<div class="report-download-card">
+
+    <div class="report-download-info">
+
+        <h3>Reflection Report</h3>
+
+        <p>
+            Download a detailed summary of your emotional patterns,
+            mood trends and reflections for the selected period.
+        </p>
+
+        <span>
+            {{ $entryCount }} reflections analysed
+        </span>
+
+    </div>
+
+    <a href="{{ route('patient.report',[
+        'period'=>$period,
+        'download'=>1
+    ]) }}"
+    class="download-btn">
+
+        Download PDF
+
+    </a>
+
+</div>
+
+</div>
+
+
+    </div>
+
+</div>
+
 @endsection
+
