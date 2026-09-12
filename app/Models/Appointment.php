@@ -24,4 +24,9 @@ class Appointment extends Model
     {
         return $this->belongsTo(Schedule::class, 'scheduleid', 'scheduleid');
     }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'appointment_id', 'appoid');
+    }
 }

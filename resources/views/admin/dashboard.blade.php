@@ -329,6 +329,9 @@
                                                     <th class="table-headin">Patient name</th>
                                                     <th class="table-headin">Therapist</th>
                                                     <th class="table-headin">Session</th>
+                                                    <th class="table-headin">Amount</th>
+                                                    <th class="table-headin">Payment</th>
+                                                    <th class="table-headin">eSewa ID</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -344,10 +347,13 @@
                                                         &nbsp;Dr. {{ Str::limit(ucwords($appo->schedule?->doctor?->docname ?? 'Unknown'), 25) }}
                                                     </td>
                                                     <td>{{ Str::limit($appo->schedule?->title ?? 'N/A', 15) }}</td>
+                                                    <td>NPR {{ number_format((float) ($appo->payment?->amount ?? config('services.esewa.amount', 500)), 2) }}</td>
+                                                    <td>{{ $appo->payment ? $appo->payment->payment_method . ' / ' . $appo->payment->payment_status : 'Pending' }}</td>
+                                                    <td>{{ $appo->payment?->esewa_transaction_id ?? '-' }}</td>
                                                 </tr>
                                                 @empty
                                                 <tr>
-                                                    <td colspan="4">
+                                                    <td colspan="7">
                                                         <center>
                                                             <br><br><br><br>
                                                             <img src="{{ asset('img/nothingfound.png') }}" width="25%">
