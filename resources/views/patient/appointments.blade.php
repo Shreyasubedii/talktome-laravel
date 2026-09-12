@@ -169,67 +169,73 @@
                                                         Booking Date: {{ $appo->appodate }}<br>
                                                         Reference Number: OC-000-{{ $appo->appoid }}
                                                     </div>
-                                                    <div class="h1-search">
-                                                        {{ Str::limit($appo->schedule?->title ?? 'Deleted Session', 21) }}<br>
-                                                    </div>
+                                                    <div class="h1-search">{{ Str::limit($appo->schedule?->title ?? 'Deleted Session', 21) }}<br></div>
                                                     <div class="h3-search">
-                                                        Appointment Number:<div class="h1-search">
-                                                            {{ str_pad($appo->apponum, 2, '0', STR_PAD_LEFT) }}</div>
+                                                        Appointment Number:<div class="h1-search">{{ str_pad($appo->apponum, 2, '0', STR_PAD_LEFT) }}</div>
                                                     </div>
-                                                    <div class="h3-search">
-                                                        <strong>Dr. {{ ucwords($appo->schedule?->doctor?->docname ?? 'Unknown Doctor') }}</strong>
+                                                    <div class="h3-search"><strong>Dr. {{ ucwords($appo->schedule?->doctor?->docname ?? 'Unknown Doctor') }}</strong></div>
+                                                    <div class="h4-search">
+                                                        Scheduled Date: {{ $appo->schedule ? \Carbon\Carbon::parse($appo->schedule->scheduledate)->format('M d, Y') : 'N/A' }}<br>
+                                                        Starts: <b>{{ $appo->schedule ? \Carbon\Carbon::parse($appo->schedule->start_time ?? $appo->schedule->scheduletime)->format('h:i A') : 'N/A' }}</b>
                                                     </div>
 
-                                                    <div class="h4-search">
-                                                        Scheduled Date:
-                                                        {{ $appo->schedule ? \Carbon\Carbon::parse($appo->schedule->scheduledate)->format('M d, Y') : 'N/A' }}
-                                                        <br>
-                                                         Starts:
-                                                         <b>
-                                                            {{ $appo->schedule ? \Carbon\Carbon::parse($appo->schedule->start_time ?? $appo->schedule->scheduletime)->format('h:i A') : 'N/A' }}
-                                                         </b>
-                                                        </div>
-                                                    <br>
-                                                    <!-- <form
-                                                        action="{{ route('patient.appointments.destroy', $appo->appoid) }}"
-                                                        method="POST">
-                                                        @csrf @method('DELETE')
-                                                        <button class="login-btn btn-primary-soft btn"
-                                                            style="padding-top:11px;padding-bottom:11px;width:100%">
-                                                            <font class="tn-in-text">Cancel Booking</font>
-                                                        </button>
-                                                    </form> -->
-                                                    
                                                     @php
-                                                     $appointmentDateTime = $appo->schedule->scheduledate->copy();
-                                                      $appointmentDateTime->setTimeFromTimeString(
-                                                          $appo->schedule->start_time ?? $appo->schedule->scheduletime
-                                                           );
-                                                            $canCancel = now()->lt(
-                                                                 $appointmentDateTime->copy()->subDay()
-                                                                 );
-                                                                 @endphp
-                                                                 
-                                                                 @if($canCancel)
-                                                                  <form action="{{ route('patient.appointments.destroy', $appo->appoid) }}" method="POST">
-                                                                      @csrf
-                                                                       @method('DELETE')
-                                                                         <button class="login-btn btn-primary-soft btn"
-                                                                          style="padding-top:11px;padding-bottom:11px;width:100%">
-                                                                            <font class="tn-in-text">Cancel Booking</font>
-                                                                          </button>
-                                                                        </form>
-                                                                        
+                                                        $appointmentDateTime = $appo->schedule?->scheduledate?->copy();
+                                                        if ($appointmentDateTime) {
+                                                            $appointmentDateTime->setTimeFromTimeString($appo->schedule->start_time ?? $appo->schedule->scheduletime);
+                                                            $canCancel = now()->lt($appointmentDateTime->copy()->subDay());
+                                                        } else {
+                                                            $canCancel = false;
+                                                        }
+                                                    @endphp
+
+                                                    <div class="booking-actions-panel">
+                                                        <div class="booking-buttons">
+                                                            <div class="payment-control">
+                                                                @if($appo->payment)
+                                                                    <div class="payment-selected-box" aria-disabled="true">
+                                                                        @if($appo->payment->payment_method === 'COD')
+                                                                            Cash Payment
                                                                         @else
-                                                                        <button class="login-btn btn-primary-soft btn"
-                                                                         style="padding-top:11px;padding-bottom:11px;width:100%;background:#ccc;cursor:not-allowed;"
-                                                                          disabled>
-                                                                           <font class="tn-in-text">Cancellation Closed</font>
-                                                                         </button>
-                                                                         <small style="color:red;">
-                                                                            Cancellation is not allowed within 24 hours of the appointment.
-                                                                        </small>
+                                                                            Paid by eSewa
+                                                                            <span class="payment-info-wrap" tabindex="0" aria-label="Refund information">
+                                                                                <span class="payment-info-icon">i</span>
+                                                                                <span class="payment-info-tooltip">If your booking is cancelled, please kindly contact the office regarding your refund.</span>
+                                                                            </span>
                                                                         @endif
+                                                                    </div>
+                                                                @else
+                                                                    <details class="payment-dropdown">
+                                                                        <summary class="login-btn btn-primary btn">Make Payment</summary>
+                                                                        <div class="payment-dropdown-options">
+                                                                            <form action="{{ route('patient.appointments.payment.cod', $appo->appoid) }}" method="POST">
+                                                                                @csrf
+                                                                                <button type="submit" class="login-btn btn-primary-soft btn"><font class="tn-in-text">Cash Payment</font></button>
+                                                                            </form>
+                                                                            <a href="{{ route('patient.appointments.payment.esewa', $appo->appoid) }}" class="login-btn btn-primary btn"><font class="tn-in-text">Pay with eSewa</font></a>
+                                                                        </div>
+                                                                    </details>
+                                                                @endif
+                                                            </div>
+
+                                                            @if($canCancel)
+                                                                <form class="booking-cancel-form" action="{{ route('patient.appointments.destroy', $appo->appoid) }}" method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button class="login-btn btn-primary-soft btn booking-cancel-button" type="submit"><font class="tn-in-text">Cancel Booking</font></button>
+                                                                </form>
+                                                            @else
+                                                                <span class="booking-cancel-closed" title="Cancellation is not allowed within 24 hours of the appointment.">
+                                                                    <button class="login-btn btn-primary-soft btn booking-cancel-button" type="button" disabled><font class="tn-in-text">Cancellation Closed</font></button>
+                                                                    <small class="booking-cancel-message">Cancellation is not allowed within 24 hours of the appointment.</small>
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                        <div class="payment-amount">
+                                                            <strong>Payment Amount</strong><br>
+                                                            <span>NPR {{ number_format((float) config('services.esewa.amount', 500), 2) }}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
@@ -243,9 +249,7 @@
                                             <center>
                                                 <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                                                 <br>
-                                                <p class="heading-main12"
-                                                    style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">You
-                                                    haven't booked anything yet!</p>
+                                                <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">You haven't booked anything yet!</p>
                                             </center>
                                             <br><br><br><br>
                                         </td>

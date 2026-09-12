@@ -30,7 +30,7 @@ class DashboardController extends Controller
             ->count();
 
         // Upcoming Appointments
-        $upcomingAppointments = Appointment::with(['patient', 'schedule.doctor'])
+        $upcomingAppointments = Appointment::with(['patient', 'schedule.doctor', 'payment'])
             ->whereHas('schedule', function ($query) use ($today, $nextweek) {
                 $query->whereBetween('scheduledate', [$today, $nextweek]);
             })

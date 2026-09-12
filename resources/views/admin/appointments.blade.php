@@ -178,6 +178,10 @@
                                         <th class="table-headin">Session Title</th>
                                         <th class="table-headin">Session Time</th>
                                         <th class="table-headin">Appointment Date</th>
+                                        <th class="table-headin">Amount</th>
+                                        <th class="table-headin">Payment Method</th>
+                                        <th class="table-headin">Payment Status</th>
+                                        <th class="table-headin">eSewa Transaction ID</th>
                                         <th class="table-headin">Events</th>
                                     </tr>
                                 </thead>
@@ -200,6 +204,10 @@
                                             {{ $appointment->schedule ? \Carbon\Carbon::parse($appointment->schedule->scheduletime)->format('h:i A') : '' }}
                                         </td>
                                         <td style="text-align:center;">{{ $appointment->appodate }}</td>
+                                        <td style="text-align:center;">NPR {{ $appointment->payment ? number_format((float) $appointment->payment->amount, 2) : number_format((float) config('services.esewa.amount', 500), 2) }}</td>
+                                        <td style="text-align:center;">{{ $appointment->payment?->payment_method ?? 'Not selected' }}</td>
+                                        <td style="text-align:center;">{{ $appointment->payment?->payment_status ?? 'Pending' }}</td>
+                                        <td style="text-align:center;">{{ $appointment->payment?->esewa_transaction_id ?? '-' }}</td>
                                         <td>
                                             <div style="display:flex;justify-content: center;">
                                                 <form
@@ -217,7 +225,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="11">
                                             <center>
                                                 <br><br><br><br>
                                                 <img src="{{ asset('img/notfound.svg') }}" width="25%">

@@ -103,9 +103,10 @@ Route::prefix('patient')->name('patient.')->middleware(['multi.auth'])->group(fu
     Route::get('/booking/complete/{id}', [BookingController::class, 'complete'])->name('booking.complete');
     Route::get('/appointments', [PatientAppointmentController::class, 'index'])->name('appointments');
     Route::delete('/appointments/{id}', [PatientAppointmentController::class, 'destroy'])->name('appointments.destroy');
+    Route::post('/appointments/{id}/payment/cod', [PaymentController::class, 'cod'])->name('appointments.payment.cod');
+    Route::get('/appointments/{id}/payment/esewa', [PaymentController::class, 'esewa'])->name('appointments.payment.esewa');
     Route::get('/recommendation', [RecommendationController::class, 'index'])->name('recommendation');
     Route::post('/recommendation', [RecommendationController::class, 'index']);
-    Route::get('/esewa', [PaymentController::class, 'esewa'])->name('esewa');
     Route::get('/esewa/success', [PaymentController::class, 'esewaSuccess'])->name('esewa.success');
     Route::get('/esewa/failure', [PaymentController::class, 'esewaFailure'])->name('esewa.failure');
     Route::get('/settings', [PatientSettingsController::class, 'index'])->name('settings');
