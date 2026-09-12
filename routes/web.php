@@ -120,7 +120,7 @@ Route::prefix('patient')->name('patient.')->middleware(['multi.auth'])->group(fu
 Route::post('/daylog', [DayLogController::class, 'store'])
     ->name('daylog.store');
     Route::delete(
-    '/patient/journal/{id}',
+    '/journal/{id}',
     [JournalController::class,'destroy']
 )->name('patient.journal.destroy');
 });
