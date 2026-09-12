@@ -231,98 +231,114 @@ public function index()
     $patient = Auth::guard('patient')->user();
 
     if (!$patient) {
-        return redirect()->route('login')
+        return redirect()
+            ->route('login')
             ->with('error', 'Please login first.');
     }
 
     $today = Carbon::now()->format('Y-m-d');
 
-    // $journals = Journal::where(
-    //     'patient_id',
-    //     $patient->pid
-    // )->latest()->get();
+    /*
+    |--------------------------------------------------------------------------
+    | Journal List
+    |--------------------------------------------------------------------------
+    */
 
-    // $latestJournal = $journals->first();
+    $journals = Journal::where('patient_id', $patient->pid)
 
-    $journals = Journal::where(
-    'patient_id',
-    $patient->pid
-)
-->orderBy('journal_date', 'asc')
-->get();
+        ->when(request('date'), function ($query) {
+            $query->whereDate('journal_date', request('date'));
+        })
 
-$latestJournal = $journals->last();
+        ->orderBy('journal_date', 'desc')
+        ->orderBy('id', 'desc')
+        ->get();
 
+    $latestJournal = $journals->first();
 
-$chartLabels = [];
-$confidenceData = [];
-$pointColors = [];
-$emotionNames = [];
+    /*
+    |--------------------------------------------------------------------------
+    | Chart Data (always uses ALL journals)
+    |--------------------------------------------------------------------------
+    */
 
-$emotionColors = [
+    $allJournals = Journal::where('patient_id', $patient->pid)
+        ->orderBy('journal_date')
+        ->orderBy('id')
+        ->get();
 
-    'joy' => '#FFD54F',
-    'amusement' => '#FFE082',
-    'admiration' => '#64B5F6',
-    'approval' => '#4CAF50',
-    'gratitude' => '#81C784',
+    $emotionColors = [
 
-    'love' => '#EC407A',
-    'caring' => '#F48FB1',
+        'joy' => '#FFD54F',
+        'amusement' => '#FFE082',
+        'admiration' => '#64B5F6',
+        'approval' => '#4CAF50',
+        'gratitude' => '#81C784',
 
-    'sadness' => '#5C6BC0',
-    'grief' => '#3949AB',
-    'disappointment' => '#7986CB',
-    'remorse' => '#9575CD',
+        'love' => '#EC407A',
+        'caring' => '#F48FB1',
 
-    'anger' => '#E53935',
-    'annoyance' => '#EF5350',
-    'disgust' => '#8D6E63',
-    'disapproval' => '#D84315',
+        'sadness' => '#5C6BC0',
+        'grief' => '#3949AB',
+        'disappointment' => '#7986CB',
+        'remorse' => '#9575CD',
 
-    'fear' => '#FB8C00',
-    'nervousness' => '#FFA726',
+        'anger' => '#E53935',
+        'annoyance' => '#EF5350',
+        'disgust' => '#8D6E63',
+        'disapproval' => '#D84315',
 
-    'confusion' => '#AB47BC',
-    'realization' => '#7E57C2',
-    'curiosity' => '#26A69A',
+        'fear' => '#FB8C00',
+        'nervousness' => '#FFA726',
 
-    'optimism' => '#66BB6A',
-    'relief' => '#26C6DA',
-    'excitement' => '#FFCA28',
+        'confusion' => '#AB47BC',
+        'realization' => '#7E57C2',
+        'curiosity' => '#26A69A',
 
-    'neutral' => '#90A4AE'
-];
+        'optimism' => '#66BB6A',
+        'relief' => '#26C6DA',
+        'excitement' => '#FFCA28',
 
-foreach ($journals as $journal) {
+        'neutral' => '#90A4AE'
+    ];
 
-    $chartLabels[] = $journal->journal_date;
+    $chartLabels = [];
+    $confidenceData = [];
+    $pointColors = [];
+    $emotionNames = [];
 
-    $confidenceData[] = $journal->confidence;
+    foreach ($allJournals as $journal) {
 
-    $emotion = strtolower($journal->primary_emotion);
-    $emotionNames[] = $journal->primary_emotion;
+        $chartLabels[] = $journal->journal_date;
 
+        $confidenceData[] = $journal->confidence;
 
-    $pointColors[] =
-        $emotionColors[$emotion] ?? '#607D8B';
+        $emotionNames[] = $journal->primary_emotion;
+
+        $pointColors[] =
+            $emotionColors[strtolower($journal->primary_emotion)]
+            ?? '#607D8B';
+    }
+
+    return view(
+        'patient.journal',
+        compact(
+            'patient',
+            'today',
+            'journals',
+            'latestJournal',
+            'chartLabels',
+            'confidenceData',
+            'pointColors',
+            'emotionNames'
+        )
+    );
 }
 
-    
-  return view(
-    'patient.journal',
-    compact(
-        'patient',
-        'today',
-        'journals',
-        'latestJournal',
-        'chartLabels',
-        'confidenceData',
-        'pointColors',
-        'emotionNames'
-    )
-);
-}
+
+
+
+
 public function store(Request $request)
 {
     $request->validate([

@@ -21,3 +21,5 @@ class Journal extends Model
         'emotion_scores' => 'array',
     ];
 }
+
+

@@ -424,7 +424,22 @@
                     padding:30px;
                 ">
 
+                <!-- <h2>Mood Trend</h2>
+
+                <canvas id="moodChart"></canvas> -->
                 <h2>Mood Trend</h2>
+
+                <p style="
+    color:#666;
+    font-size:14px;
+    margin-top:8px;
+    margin-bottom:20px;
+    line-height:1.6;
+">
+                    This chart visualizes how your overall mood has changed over time.
+                    Higher points represent more pleasant emotional states, lower points indicate more unpleasant moods,
+                    while values around the middle represent neutral feelings.
+                </p>
 
                 <canvas id="moodChart"></canvas>
 
