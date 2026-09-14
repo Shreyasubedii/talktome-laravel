@@ -3,7 +3,7 @@
 @section('title', 'Manage Doctors')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/doctor.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 @endsection
 
 @section('content')
