@@ -22,6 +22,101 @@
     animation: transitionIn-Y-bottom .5s;
 }
 
+.notification-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.date-notification-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.notification-bell {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #9ca3af;
+    font-size: 16px;
+    line-height: 28px;
+    cursor: pointer;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -3px;
+    right: -4px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: #dc2626;
+    color: #fff;
+    font-size: 10px;
+    line-height: 15px;
+    text-align: center;
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 36px;
+    right: 0;
+    z-index: 20;
+    width: min(360px, calc(100vw - 32px));
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .14);
+    text-align: left;
+}
+
+.notification-dropdown.is-open {
+    display: block;
+}
+
+.notification-dropdown-title {
+    margin: 0 0 8px;
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.notification-item {
+    padding: 10px 8px;
+    border-top: 1px solid #eef2f7;
+    color: #4b5563;
+    font-size: 13px;
+}
+
+.notification-item.unread {
+    background: #f8fbff;
+}
+
+.notification-item strong {
+    color: #1f2937;
+}
+
+.notification-read-status {
+    float: right;
+    color: #2563eb;
+    font-size: 11px;
+}
+
+@media (max-width: 600px) {
+    .notification-dropdown {
+        position: fixed;
+        top: 78px;
+        right: 16px;
+    }
+}
+
 
 /* =======================================================
    Emotional Insight Card
@@ -644,8 +739,37 @@ overflow-x:auto;
                     <p class="heading-sub12" style="padding: 0;margin: 0; text-align:right;">{{ $today }}</p>
                 </td>
                 <td width="10%">
+                    <div style="display:flex;justify-content:center;align-items:center;gap:8px;">
                     <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img
-                            src="{{ asset('img/calendar.svg') }}" width="100%"></button>
+                        src="{{ asset('img/calendar.svg') }}" width="100%"></button>
+                    <div class="notification-wrapper">
+                        <button type="button" class="notification-bell" id="notificationBell"
+                            aria-label="Notifications" aria-expanded="false">
+                            &#128276;
+                            @if($unreadNotificationsCount > 0)
+                                <span class="notification-badge">{{ $unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount }}</span>
+                            @endif
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown" role="dialog" aria-label="Notifications">
+                            <p class="notification-dropdown-title">Notifications</p>
+                            @forelse($notifications as $notification)
+                                <div class="notification-item {{ $notification->read_at ? '' : 'unread' }}">
+                                    <span class="notification-read-status">{{ $notification->read_at ? 'Read' : 'Unread' }}</span>
+                                    <strong>{{ $notification->title }}</strong><br>
+                                    <span>{{ $notification->message }}</span>
+                                    @if(!$notification->read_at)
+                                        <form action="{{ route('patient.notifications.read', $notification->id) }}" method="POST" style="margin-top:6px;">
+                                            @csrf
+                                            <button type="submit" class="login-btn btn-primary-soft btn">Mark as read</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @empty
+                                <div class="notification-item">No notifications</div>
+                            @endforelse
+                        </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -1248,6 +1372,30 @@ Last 12 Months Overview
     </div>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const bell = document.getElementById('notificationBell');
+    const dropdown = document.getElementById('notificationDropdown');
+
+    if (!bell || !dropdown) {
+        return;
+    }
+
+    bell.addEventListener('click', function (event) {
+        event.stopPropagation();
+        const isOpen = dropdown.classList.toggle('is-open');
+        bell.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!dropdown.contains(event.target) && event.target !== bell) {
+            dropdown.classList.remove('is-open');
+            bell.setAttribute('aria-expanded', 'false');
+        }
+    });
+});
+</script>
 
 @endsection
 
