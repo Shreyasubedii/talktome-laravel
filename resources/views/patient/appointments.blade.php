@@ -171,7 +171,7 @@
                                                     </div>
                                                     <div class="h1-search">{{ Str::limit($appo->schedule?->title ?? 'Deleted Session', 21) }}<br></div>
                                                     <div class="h3-search">
-                                                        Appointment Number:<div class="h1-search">{{ str_pad($appo->apponum, 2, '0', STR_PAD_LEFT) }}</div>
+                                                        Appointment Number:<div class="h1-search">{{ str_pad($appo->appoid, 2, '0', STR_PAD_LEFT) }}</div>
                                                     </div>
                                                     <div class="h3-search"><strong>Dr. {{ ucwords($appo->schedule?->doctor?->docname ?? 'Unknown Doctor') }}</strong></div>
                                                     <div class="h4-search">

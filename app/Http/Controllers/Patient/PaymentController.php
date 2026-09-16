@@ -60,6 +60,14 @@ class PaymentController extends Controller
 
     public function esewaSuccess(Request $request)
     {
+        // testing
+
+    \Log::info('ESEWA SUCCESS CALLBACK REACHED', [
+    'query' => $request->query(),
+    'data' => $request->input('data'),
+]);
+
+
         $encodedResponse = $request->input('data');
         if (!$encodedResponse) {
             return redirect()->route('patient.appointments')->with('error', 'eSewa payment response was incomplete.');
@@ -86,15 +94,38 @@ class PaymentController extends Controller
             return redirect()->route('patient.appointments')->with('error', 'Payment has already been selected for this booking.');
         }
 
+        // try {
+        //     $verification = Http::get(config('services.esewa.status_url'), [
+        //         'total_amount' => number_format($this->amount(), 2, '.', ''),
+        //         'product_code' => config('services.esewa.merchant_code'),
+        //         'transaction_uuid' => $transactionUuid,
+        //     ]);
+        // } catch (\Throwable $exception) {
+        //     $verification = null;
+        // }
+
+//current one replaced for testing
+
         try {
-            $verification = Http::get(config('services.esewa.status_url'), [
-                'total_amount' => number_format($this->amount(), 2, '.', ''),
-                'product_code' => config('services.esewa.merchant_code'),
-                'transaction_uuid' => $transactionUuid,
-            ]);
-        } catch (\Throwable $exception) {
-            $verification = null;
-        }
+    $verification = Http::get(config('services.esewa.status_url'), [
+        'total_amount' => number_format($this->amount(), 2, '.', ''),
+        'product_code' => config('services.esewa.merchant_code'),
+        'transaction_uuid' => $transactionUuid,
+    ]);
+} catch (\Throwable $exception) {
+    \Log::error('ESEWA STATUS CHECK FAILED', [
+        'message' => $exception->getMessage(),
+    ]);
+
+    $verification = null;
+}
+
+\Log::info('ESEWA VERIFICATION RESULT', [
+    'status' => $verification?->status(),
+    'successful' => $verification?->successful(),
+    'body' => $verification?->body(),
+    'json' => $verification?->json(),
+]);
 
         $verificationData = $verification?->json();
         if (!$verification?->successful()
