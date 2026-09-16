@@ -156,7 +156,12 @@ class PaymentController extends Controller
     private function patientAppointment($id): Appointment
     {
         $patient = Auth::guard('patient')->user();
-        return Appointment::with('payment')->where('pid', $patient->pid)->findOrFail($id);
+        return Appointment::with('payment', 'schedule')
+            ->where('pid', $patient->pid)
+            ->whereHas('schedule', function ($query) {
+                $query->where('scheduledate', '>=', now()->addDay()->toDateString());
+            })
+            ->findOrFail($id);
     }
 
     private function amount(): float

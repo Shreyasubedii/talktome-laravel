@@ -176,12 +176,16 @@
                                         <td>Dr. {{ $doc->docname }}</td>
                                         <td>{{ $doc->specialty?->sname }}</td>
                                         <td>
+                                            @if($doc->schedules->isNotEmpty())
                                             <a href="{{ route('patient.booking', $doc->docid) }}"
                                                 class="non-style-link"><button
                                                     class="btn-primary-soft btn button-icon menu-icon-session-active"
                                                     style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;">
                                                     <font class="tn-in-text">Book Now</font>
                                                 </button></a>
+                                            @else
+                                                No sessions available
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

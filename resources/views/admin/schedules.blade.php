@@ -318,7 +318,7 @@ function openAdminEditAvailability(id, title, date, startTime, endTime, max) {
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="date" name="date" class="input-text" min="{{ date('Y-m-d') }}"
+                                <input type="date" name="date" class="input-text" min="{{ now()->addDay()->toDateString() }}"
                                     required><br>
                             </td>
                         </tr>
@@ -379,7 +379,7 @@ function openAdminEditAvailability(id, title, date, startTime, endTime, max) {
                                     <label class="form-label">Max patients:</label>
                                     <input type="number" id="edit_nop" name="nop" class="input-text" min="1" required><br>
                                     <label class="form-label">Availability Date:</label>
-                                    <input type="date" id="edit_date" name="date" class="input-text" min="{{ date('Y-m-d') }}" required><br>
+                                    <input type="date" id="edit_date" name="date" class="input-text" min="{{ now()->addDay()->toDateString() }}" required><br>
                                     <label class="form-label">Start Time:</label>
                                     <input type="time" id="edit_start_time" name="start_time" class="input-text" required><br>
                                     <label class="form-label">End Time:</label>

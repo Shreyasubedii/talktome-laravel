@@ -36,31 +36,13 @@ class ScheduleController extends Controller
     {
         $doctor = Auth::guard('doctor')->user();
 
-        // $request->validate([
-        //     'title' => 'required|string|max:255',
-        //     'date' => 'required|date|after_or_equal:today',
-        //     'start_time' => 'required|date_format:H:i',
-        //     'end_time' => 'required|date_format:H:i|after:start_time',
-        //     'nop' => 'required|integer|min:1',
-        // ]);
         $request->validate([
-    'title' => 'required|string|max:255',
-    'date' => 'required|date|after_or_equal:today',
-    'start_time' => 'required|date_format:H:i',
-    'end_time' => 'required|date_format:H:i|after:start_time',
-    'nop' => 'required|integer|min:1',
-]);
-
-$startDateTime = \Carbon\Carbon::createFromFormat(
-    'Y-m-d H:i',
-    $request->date . ' ' . $request->start_time
-);
-
-if ($startDateTime->lte(now())) {
-    return back()
-        ->withInput()
-        ->with('error', 'The availability start time must be in the future.');
-}
+            'title' => 'required|string|max:255',
+            'date' => 'required|date|after:today',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'nop' => 'required|integer|min:1',
+        ]);
 
         $startTime = $request->input('start_time');
         $endTime = $request->input('end_time');
@@ -98,22 +80,12 @@ if ($startDateTime->lte(now())) {
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'date' => 'required|date|after_or_equal:today',
+            'date' => 'required|date|after:today',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'nop' => 'required|integer|min:1',
         ]);
-        //added for date filter 
-$startDateTime = \Carbon\Carbon::createFromFormat(
-    'Y-m-d H:i',
-    $request->date . ' ' . $request->start_time
-);
 
-if ($startDateTime->lte(now())) {
-    return back()
-        ->withInput()
-        ->with('error', 'The availability start time must be in the future.');
-}
         $startTime = $request->input('start_time');
         $endTime = $request->input('end_time');
         $date = $request->input('date');

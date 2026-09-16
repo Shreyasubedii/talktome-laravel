@@ -159,7 +159,7 @@
             <tr>
                 <td colspan="4">
                     <div style="margin: 8px 45px 16px; padding: 14px 16px; border-radius: 12px; background: #f8fbff; border: 1px solid #dbeafe; color: #4b5563;">
-                        Pick a 30-minute slot that suits you.
+                        Pick a slot that suits you.
                     </div>
                 </td>
             </tr>

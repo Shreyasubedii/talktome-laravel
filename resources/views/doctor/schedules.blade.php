@@ -277,7 +277,7 @@
                                                 <br>
                                                 <p class="heading-main12"
                                                     style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Looks
-                                                    like you have not added any availability yet.
+                                                    like you have not added any availability.
                                                 </p>
                                             </center>
                                             <br><br><br><br>
@@ -338,6 +338,7 @@ function openEditAvailability(id, title, date, startTime, endTime, max) {
 let doctorCalendarMonth = '{{ date('Y-m') }}';
 let editDoctorCalendarMonth = '{{ date('Y-m') }}';
 let doctorOverviewMonth = '{{ date('Y-m') }}';
+const minimumDoctorDate = '{{ now()->addDay()->toDateString() }}';
 const doctorExistingDates = @json($doctorScheduleDates);
 
 function renderDoctorCalendar() {
@@ -356,7 +357,8 @@ function renderDoctorCalendar() {
         const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const selected = document.getElementById('doctorDateInput').value === date;
         const existing = doctorExistingDates.includes(date);
-        html += `<button type="button" class="calendar-day ${selected ? 'selected' : ''} ${existing ? 'active' : ''}" onclick="selectDoctorDate('${date}')">${day}</button>`;
+        const disabled = date < minimumDoctorDate;
+        html += `<button type="button" class="calendar-day ${selected ? 'selected' : ''} ${existing ? 'active' : ''}" ${disabled ? 'disabled' : `onclick="selectDoctorDate('${date}')"`}>${day}</button>`;
     }
     document.getElementById('doctorCalendarGrid').innerHTML = html;
 }
@@ -377,17 +379,20 @@ function renderEditDoctorCalendar() {
         const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const selected = document.getElementById('edit_date').value === date;
         const existing = doctorExistingDates.includes(date);
-        html += `<button type="button" class="calendar-day ${selected ? 'selected' : ''} ${existing ? 'active' : ''}" onclick="selectEditDoctorDate('${date}')">${day}</button>`;
+        const disabled = date < minimumDoctorDate;
+        html += `<button type="button" class="calendar-day ${selected ? 'selected' : ''} ${existing ? 'active' : ''}" ${disabled ? 'disabled' : `onclick="selectEditDoctorDate('${date}')"`}>${day}</button>`;
     }
     document.getElementById('editDoctorCalendarGrid').innerHTML = html;
 }
 
 function selectDoctorDate(date) {
+    if (date < minimumDoctorDate) return;
     document.getElementById('doctorDateInput').value = date;
     renderDoctorCalendar();
 }
 
 function selectEditDoctorDate(date) {
+    if (date < minimumDoctorDate) return;
     document.getElementById('edit_date').value = date;
     renderEditDoctorCalendar();
 }
@@ -508,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                     <div id="doctorCalendarGrid" class="calendar-grid"></div>
                                 </div>
-                                <input type="date" name="date" id="doctorDateInput" class="input-text" min="{{ date('Y-m-d') }}" required><br>
+                                <input type="date" name="date" id="doctorDateInput" class="input-text" min="{{ now()->addDay()->toDateString() }}" required><br>
                                 <p style="font-size:12px;color:#666;margin-top:4px;">Click a day in the calendar to choose the date.</p>
                             </td>
                         </tr>
@@ -594,7 +599,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                     <div id="editDoctorCalendarGrid" class="calendar-grid"></div>
                                 </div>
-                                <input type="date" id="edit_date" name="date" class="input-text" min="{{ date('Y-m-d') }}" required><br>
+                                <input type="date" id="edit_date" name="date" class="input-text" min="{{ now()->addDay()->toDateString() }}" required><br>
                                 <label class="form-label">Start Time:</label>
                                 <input type="time" id="edit_start_time" name="start_time" class="input-text" required><br>
                                 <label class="form-label">End Time:</label>

@@ -9,22 +9,48 @@ use App\Models\WebUser;
 
 class DoctorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $doctors = Doctor::with('specialty')->get();
+        $search = trim((string) $request->input('search', ''));
+        $query = Doctor::with('specialty');
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search) {
+                $query->where('docname', 'like', '%' . $search . '%')
+                    ->orWhereHas('specialty', function ($specialtyQuery) use ($search) {
+                        $specialtyQuery->where('sname', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $doctors = $query->get();
         $specialties = \App\Models\Specialty::orderBy('sname', 'asc')->get();
-        return view('admin.doctors', compact('doctors', 'specialties'));
+        return view('admin.doctors', compact('doctors', 'specialties', 'search'));
     }
     
     public function store(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'name' => 'required',
-            'password' => 'required',
-            'nic' => 'required',
-            'tel' => 'required',
-            'specialty' => 'required'
+            'email' => 'required|email|unique:doctor,docemail|unique:webuser,email',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z\s]+$/'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&.#]/',
+            ],
+            'nic' => 'nullable|string|max:20',
+            'tel' => ['required', 'regex:/^(98|97)[0-9]{8}$/'],
+            'specialty' => 'required|exists:specialties,id',
+        ], [
+            'email.unique' => 'This email is already registered.',
+            'name.regex' => 'Name should contain only letters and spaces.',
+            'tel.regex' => 'Telephone must be a valid 10-digit number starting with 98 or 97.',
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.regex' => 'Password must contain at least one number, capital letter, small letter and one special character.',
         ]);
         
         $doctor = Doctor::create([

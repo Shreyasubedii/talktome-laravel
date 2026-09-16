@@ -11,18 +11,31 @@ class DoctorsController extends Controller
 {
     public function index(Request $request)
     {
-        $specialty = $request->specialty;
-        
+        $search = trim((string) $request->input('search', ''));
+        $specialty = $request->input('specialty');
+
+        $query = Doctor::with('specialty');
+
         if ($specialty) {
-            $doctors = Doctor::where('specialties', $specialty)->with('specialty')->get();
-        } else {
-            $doctors = Doctor::with('specialty')->get();
+            $query->where('specialties', $specialty);
         }
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search) {
+                $query->where('docname', 'like', '%' . $search . '%')
+                    ->orWhere('docemail', 'like', '%' . $search . '%')
+                    ->orWhereHas('specialty', function ($specialtyQuery) use ($search) {
+                        $specialtyQuery->where('sname', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $doctors = $query->get();
         
         $specialties = Specialty::all();
         $today = date('Y-m-d');
         $patient = auth()->guard('patient')->user();
         
-        return view('patient.doctors', compact('doctors', 'specialties', 'today', 'patient'));
+        return view('patient.doctors', compact('doctors', 'specialties', 'today', 'patient', 'search'));
     }
 }
