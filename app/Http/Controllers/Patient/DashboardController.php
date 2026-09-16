@@ -13,6 +13,7 @@ use App\Models\Appointment;
 use App\Models\History;
 use App\Models\Journal;
 use App\Models\DayLog;
+use App\Models\PatientNotification;
 use Carbon\Carbon;
 class DashboardController extends Controller
 {
@@ -59,6 +60,15 @@ class DashboardController extends Controller
     $appointments = Appointment::where('pid', $patient->pid)
         ->with('schedule.doctor')
         ->get();
+
+    $notifications = PatientNotification::where('patient_id', $patient->pid)
+        ->latest()
+        ->limit(5)
+        ->get();
+
+    $unreadNotificationsCount = PatientNotification::where('patient_id', $patient->pid)
+        ->whereNull('read_at')
+        ->count();
 
     $daylogs = DayLog::where('patient_id', $patient->pid)
         ->whereDate('log_date', '>=', $start)
@@ -650,6 +660,10 @@ elseif ($period == 'Y') {
     return view('patient.dashboard', [
 
         'appointments' => $appointments,
+
+        'notifications' => $notifications,
+
+        'unreadNotificationsCount' => $unreadNotificationsCount,
 
         'today' => $today->format('Y-m-d'),
 

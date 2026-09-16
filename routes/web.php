@@ -22,6 +22,7 @@ use App\Http\Controllers\Patient\PaymentController;
 use App\Http\Controllers\Patient\SettingsController as PatientSettingsController;
 use App\Http\Controllers\Patient\DayLogController as DayLogController;
 use App\Http\Controllers\Patient\JournalController;
+use App\Http\Controllers\Patient\NotificationController;
 
 // added for insight
 use App\Http\Controllers\Patient\ReportController;
@@ -90,6 +91,7 @@ Route::prefix('doctor')->name('doctor.')->middleware(['multi.auth'])->group(func
 // Patient routes
 Route::prefix('patient')->name('patient.')->middleware(['multi.auth'])->group(function () {
     Route::get('/dashboard', [PatientDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::get('/doctors', [DoctorsController::class, 'index'])->name('doctors');
     Route::get('/schedules', [PatientScheduleController::class, 'index'])->name('schedules');
     // Route::get('/schedules', [PatientScheduleController::class, 'index'])->name('patient.recommendation');
