@@ -197,7 +197,7 @@
     </div>
 
     <!-- <div class="dash-body" style="margin-top: 15px"> -->
-    <div class="dash-body" style="margin-left:260px;">
+    <div class="dash-body">
         <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;">
             <tr>
                 <td colspan="2" class="nav-bar">
@@ -229,16 +229,16 @@
                         <table class="filter-container" style="border: none;" border="0">
                             <tr>
                                 <td colspan="4">
-                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
+                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Welcome to admin dashboard</p>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td style="width: 25%;">
                                     <div class="dashboard-items"
                                         style="padding:20px;margin:auto;width:95%;display: flex">
                                         <div>
                                             <div class="h1-dashboard">{{ $doctorsCount }}</div><br>
-                                            <div class="h3-dashboard">Therapists &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="h3-dashboard">Therapists &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             </div>
                                         </div>
                                         <div class="btn-icon-back dashboard-icons"
@@ -282,7 +282,7 @@
                                         </div>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </table>
                     </center>
                 </td>
@@ -294,17 +294,16 @@
                         <tr>
                             <td>
                                 <p
-                                    style="padding:10px;padding-left:48px;padding-bottom:0;font-size:23px;font-weight:700;color:var(--primarycolor);">
-                                    Upcoming Appointments until Next
+                                    style="padding:10px;text-align:center;padding-bottom:0;font-size:23px;font-weight:700;color:var(--primarycolor)">
+                                    Upcoming Appointments/Sessions until Next
                                     {{ \Carbon\Carbon::now()->addWeek()->format('l') }}
                                 </p>
                                 <p
-                                    style="padding-bottom:19px;padding-left:50px;font-size:15px;font-weight:500;color:#212529e3;line-height: 20px;">
-                                    Here's Quick access to Upcoming Appointments until 7 days<br>
-                                    More details available in Appointment section.
+                                    style="padding-bottom:19px;text-align:center;font-size:15px;font-weight:500;color:#212529e3;line-height: 20px;">
+                                    Displaying upcoming appointments/sessions till next seven days. More details available in Appointment section.
                                 </p>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <p
                                     style="text-align:right;padding:10px;padding-right:48px;padding-bottom:0;font-size:23px;font-weight:700;color:var(--primarycolor);">
                                     Upcoming Sessions until Next {{ \Carbon\Carbon::now()->addWeek()->format('l') }}
@@ -314,7 +313,7 @@
                                     Here's Quick access to Upcoming Sessions that Scheduled until 7 days<br>
 
                                 </p>
-                            </td>
+                            </td> -->
                         </tr>
                         <tr>
                             <td width="50%">
@@ -323,7 +322,7 @@
                                         <table width="85%" class="sub-table scrolldown" border="0">
                                             <thead>
                                                 <tr>
-                                                    <th class="table-headin" style="font-size: 12px;">Appointment
+                                                    <th class="table-headin" style="font-size: 16px;">Appointment
                                                         number
                                                     </th>
                                                     <th class="table-headin">Patient name</th>
@@ -370,7 +369,7 @@
                                     </div>
                                 </center>
                             </td>
-                            <td width="50%" style="padding: 0;">
+                            <!-- <td width="50%" style="padding: 0;">
                                 <center>
                                     <div class="abc scroll" style="height: 200px;padding: 0;margin: 0;">
                                         <table width="85%" class="sub-table scrolldown" border="0">
@@ -412,8 +411,8 @@
                                         </table>
                                     </div>
                                 </center>
-                            </td>
-                        </tr>
+                            </td> -->
+                        <!-- </tr>
                         <tr>
                             <td>
                                 <center>
@@ -431,16 +430,13 @@
                         </tr>
                     </table>
                 </td>
-            </tr>
+            </tr> -->
         </table>
 
 
         <!-- added feature from here  -->
 
-        <!-- ========================================================= -->
         <!-- ADVANCED ANALYTICS SECTION -->
-        <!-- ========================================================= -->
-
         <div style="padding:20px 10px 30px 10px;">
 
             <!-- HEADER -->
@@ -454,11 +450,11 @@
 
                     <div>
                         <h1 class="analytics-main-title">
-                            Advanced Analytics Dashboard
+                             Analytics Dashboard
                         </h1>
 
                         <p class="analytics-subtitle">
-                            Real-time insights, platform growth metrics and booking activity overview.
+                            Real-time insights and booking activity overview.
                         </p>
                     </div>
 
@@ -1019,10 +1015,7 @@
         }
         </style>
 
-        <!-- ========================================================= -->
         <!-- JAVASCRIPT -->
-        <!-- ========================================================= -->
-
         <script>
         document.addEventListener("DOMContentLoaded", () => {
 

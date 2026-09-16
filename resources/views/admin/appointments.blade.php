@@ -3,7 +3,7 @@
 @section('title', 'Appointments')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/doctor.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 @endsection
 
 @section('content')
@@ -193,7 +193,7 @@
                                         </td>
                                         <td
                                             style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                            {{ $appointment->apponum }}</td>
+                                            {{ $appointment->appoid }}</td>
                                         <td>Dr. {{ Str::limit (ucwords($appointment->schedule?->doctor?->docname ?? 'Unknown Doctor'), 25) }}
                                         </td>
                                         <td>{{ Str::limit($appointment->schedule?->title ?? 'Deleted Session', 15) }}

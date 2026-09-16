@@ -3,7 +3,7 @@
 @section('title', 'Schedules')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/doctor.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 @endsection
 
 @section('content')
@@ -202,7 +202,7 @@
                                         <td style="text-align:center;">{{ $schedule->remaining_capacity ?? $schedule->nop }}/{{ $schedule->nop }}</td>
                                         <td>
                                             <div style="display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;">
-                                                <button type="button" class="btn-primary-soft btn button-icon btn-view"
+                                                <button type="button" class="btn-primary-soft btn button-icon btn-edit"
                                                     style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"
                                                     onclick="openAdminEditAvailability({{ $schedule->scheduleid }}, '{{ addslashes($schedule->title) }}', '{{ \Carbon\Carbon::parse($schedule->scheduledate)->format('Y-m-d') }}', '{{ $schedule->start_time ?? $schedule->scheduletime }}', '{{ $schedule->end_time ?? $schedule->scheduletime }}', '{{ $schedule->nop }}')">
                                                     <font class="tn-in-text">Edit</font>

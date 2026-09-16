@@ -171,7 +171,7 @@
                                             &nbsp;{{ Str::limit($appointment->patient?->pname ?? 'Unknown', 25) }}</td>
                                         <td
                                             style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">
-                                            {{ $appointment->apponum }}</td>
+                                            {{ $appointment->appoid }}</td>
                                         <td>{{ Str::limit($appointment->schedule?->title ?? 'Deleted Session', 15) }}
                                         </td>
                                         <td style="display:flex;justify-content: center;">
