@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Schedule;
+use App\Models\PatientNotification;
 use App\Services\ScheduleUpdateService;
 
 class ScheduleController extends Controller
@@ -104,7 +105,28 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         $doctor = Auth::guard('doctor')->user();
-        Schedule::where('docid', $doctor->docid)->findOrFail($id)->delete();
+        $schedule = Schedule::where('docid', $doctor->docid)
+            ->with('appointments')
+            ->findOrFail($id);
+
+        foreach ($schedule->appointments as $appointment) {
+            $notificationType = 'appointment_cancelled:' . $appointment->appoid;
+
+            if (!PatientNotification::where('type', $notificationType)->exists()) {
+                PatientNotification::create([
+                    'patient_id' => $appointment->pid,
+                    'type' => $notificationType,
+                    'title' => 'Appointment cancelled',
+                    'message' => sprintf(
+                        'Dr. %s cancelled your appointment scheduled for %s because the availability slot was deleted. Status: Cancelled.',
+                        ucwords($doctor->docname),
+                        $schedule->scheduledate?->format('M d, Y') ?? $appointment->appodate
+                    ),
+                ]);
+            }
+        }
+
+        $schedule->delete();
         return back()->with('success', 'Availability deleted');
     }
 }

@@ -10,14 +10,26 @@ use App\Models\Appointment;
 
 class PatientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $doctor = Auth::guard('doctor')->user();
         $patientIds = Appointment::whereHas('schedule', function($q) use ($doctor) {
             $q->where('docid', $doctor->docid);
         })->pluck('pid')->unique();
-        
-        $patients = Patient::whereIn('pid', $patientIds)->get();
+
+        $search = trim((string) $request->input('search', ''));
+        $query = Patient::whereIn('pid', $patientIds);
+
+        if ($search !== '') {
+            $search = strtolower($search);
+            $query->where(function ($query) use ($search) {
+                $query->whereRaw('LOWER(pname) LIKE ?', ['%' . $search . '%'])
+                    ->orWhereRaw('LOWER(pemail) LIKE ?', ['%' . $search . '%'])
+                    ->orWhereRaw('LOWER(ptel) LIKE ?', ['%' . $search . '%']);
+            });
+        }
+
+        $patients = $query->get();
         $today = date('Y-m-d');
         return view('doctor.patients', compact('patients', 'today', 'doctor'));
     }
