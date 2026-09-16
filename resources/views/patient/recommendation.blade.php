@@ -211,7 +211,7 @@
 
                         @else
 
-                        <img src="{{ asset('img/notfound.svg') }}" width="25%">
+                        <img src="{{ asset('img/nothingfound.png') }}" width="25%">
                         <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">
                             No specific matches found. Try different keywords or browse all doctors.
                         </p>

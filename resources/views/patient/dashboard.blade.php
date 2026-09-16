@@ -855,7 +855,7 @@ overflow-x:auto;
                         </div>
 
                         <div class="summary-value">
-                            {{ number_format($averageMood,1) }}/10
+                              {{ number_format((float) $averageMood, 1) }}/10
                         </div>
 
                         <div class="summary-subtitle">
