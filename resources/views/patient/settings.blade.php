@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 <link rel="stylesheet" href="{{ asset('css/patient.css') }}">
 <style>
+.password-field-wrapper { position: relative; display: block; }
+.password-field-wrapper .input-text { padding-right: 38px; }
+.password-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: #9ca3af; cursor: pointer; font-size: 15px; padding: 2px; }
 /* .popup {
     animation: transitionIn-Y-bottom 0.5s;
 }
@@ -93,6 +96,13 @@
 @endsection
 
 @section('content')
+<script>
+function togglePatientSettingsPassword(id, button) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    button.setAttribute('aria-label', input.type === 'password' ? 'Show password' : 'Hide password');
+}
+</script>
 <div class="container">
     <div class="menu">
         <table class="menu-container" border="0">
@@ -286,7 +296,7 @@
 </div>
 
 {{-- Edit Popup --}}
-<div id="edit-popup" class="overlay" style="display: none;">
+<div id="edit-popup" class="overlay" style="display: {{ $errors->any() ? 'block' : 'none' }};">
     <div class="popup">
         <center>
             <a class="close" href="#" onclick="document.getElementById('edit-popup').style.display='none'">&times;</a>
@@ -301,33 +311,52 @@
                         </tr>
                         <form action="{{ route('patient.settings.update') }}" method="POST">
                             @csrf @method('PUT')
+                            @php($errorStyle = 'display:block;color:#dc2626;font-size:12px;margin-top:4px;')
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="name" class="form-label">Name: </label>
-                                    <input type="text" name="name" class="input-text" value="{{ $patient->pname }}"
+                                    <input type="text" name="name" class="input-text" value="{{ old('name', $patient->pname) }}"
                                         required>
+                                    @error('name')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
+                            </tr>
+                            <tr><td class="label-td" colspan="2">
+                                    <label for="email" class="form-label">Email: </label>
+                                    <input type="email" name="email" class="input-text" value="{{ old('email', $patient->pemail) }}" required>
+                                    @error('email')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
+                                </td>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="address" class="form-label">Address: </label>
                                     <input type="text" name="address" class="input-text"
-                                        value="{{ $patient->paddress }}" required>
+                                        value="{{ old('address', $patient->paddress) }}" required>
+                                    @error('address')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="tel" class="form-label">Telephone: </label>
-                                    <input type="tel" name="tel" class="input-text" value="{{ $patient->ptel }}"
+                                    <input type="tel" name="tel" class="input-text" value="{{ old('tel', $patient->ptel) }}"
                                         required>
+                                    @error('tel')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
+                                </td>
+                            </tr>
+                            <tr><td class="label-td" colspan="2">
+                                    <label for="dob" class="form-label">Date of Birth: </label>
+                                    <input type="date" name="dob" class="input-text" value="{{ old('dob', $patient->pdob) }}" required>
+                                    @error('dob')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <label for="password" class="form-label">New Password (leave blank to keep current):
                                     </label>
-                                    <input type="password" name="password" class="input-text"
-                                        placeholder="New Password">
+                                    <span class="password-field-wrapper"><input type="password" id="patient_settings_password" name="password" class="input-text"
+                                        placeholder="New Password"><button type="button" class="password-toggle" onclick="togglePatientSettingsPassword('patient_settings_password', this)" aria-label="Show password">&#128065;</button></span>
+                                    @error('password')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
+                                    <span class="password-field-wrapper"><input type="password" id="patient_settings_password_confirmation" name="password_confirmation" class="input-text" placeholder="Confirm New Password"><button type="button" class="password-toggle" onclick="togglePatientSettingsPassword('patient_settings_password_confirmation', this)" aria-label="Show password">&#128065;</button></span>
+                                    @error('password_confirmation')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 </td>
                             </tr>
                             <tr>

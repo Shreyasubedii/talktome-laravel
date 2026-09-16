@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
 use App\Models\WebUser;
+use Illuminate\Validation\Rule;
 
 class DoctorController extends Controller
 {
@@ -75,10 +76,15 @@ class DoctorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'tel' => 'required|string|max:20',
+            'email' => ['required', 'email', Rule::unique('doctor', 'docemail')->ignore($id, 'docid'), Rule::unique('webuser', 'email')->ignore($request->email, 'email')],
+            'tel' => ['required', 'regex:/^(98|97)[0-9]{8}$/'],
             'nic' => 'required|string|max:20',
             'specialty' => 'required|exists:specialties,id',
+            'password' => 'nullable|string|min:8|confirmed',
+        ], [
+            'email.unique' => 'This email is already registered.',
+            'tel.regex' => 'Telephone must be a valid 10-digit number starting with 98 or 97.',
+            'password.confirmed' => 'Password confirmation does not match.',
         ]);
 
         $doctor = Doctor::findOrFail($id);
@@ -89,6 +95,10 @@ class DoctorController extends Controller
             'docnic' => $request->nic,
             'specialties' => $request->specialty,
         ]);
+
+        if ($request->filled('password')) {
+            $doctor->update(['docpassword' => $request->password]);
+        }
 
         WebUser::where('email', $doctor->getOriginal('docemail'))->delete();
         WebUser::create(['email' => $request->email, 'usertype' => 'd']);

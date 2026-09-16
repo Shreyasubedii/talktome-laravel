@@ -4,6 +4,15 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<style>
+.schedule-error-message {
+    transition: opacity 0.5s ease;
+}
+
+.schedule-error-message.is-hidden {
+    opacity: 0;
+}
+</style>
 @endsection
 
 @section('content')
@@ -256,6 +265,41 @@ function openAdminEditAvailability(id, title, date, startTime, endTime, max) {
     document.getElementById('edit_nop').value = max;
     document.getElementById('editPopup').style.display = 'block';
 }
+
+@if(session('error') && session('edit_schedule_id'))
+@php
+    $editSchedule = $schedules->firstWhere('scheduleid', session('edit_schedule_id'));
+@endphp
+@if($editSchedule)
+document.addEventListener('DOMContentLoaded', function () {
+    openAdminEditAvailability(
+        {{ $editSchedule->scheduleid }},
+        @json($editSchedule->title),
+        @json($editSchedule->scheduledate->format('Y-m-d')),
+        @json($editSchedule->start_time ?? $editSchedule->scheduletime),
+        @json($editSchedule->end_time ?? $editSchedule->scheduletime),
+        {{ $editSchedule->nop }}
+    );
+});
+@endif
+@endif
+
+@if(session('error'))
+document.addEventListener('DOMContentLoaded', function () {
+    const errorMessage = document.querySelector('.schedule-error-message');
+
+    if (!errorMessage) {
+        return;
+    }
+
+    setTimeout(function () {
+        errorMessage.classList.add('is-hidden');
+        setTimeout(function () {
+            errorMessage.remove();
+        }, 500);
+    }, 4000);
+});
+@endif
 </script>
 
 {{-- Add Session Popup --}}
@@ -374,6 +418,11 @@ function openAdminEditAvailability(id, title, date, startTime, endTime, max) {
                                 <form id="editAvailabilityForm" method="POST">
                                     @csrf
                                     @method('PUT')
+                                    @if(session('error'))
+                                        <div class="schedule-error-message" style="margin-bottom:12px;padding:10px 12px;border:1px solid #fecaca;border-radius:6px;background:#fef2f2;color:#b91c1c;font-size:14px;text-align:left;">
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
                                     <label class="form-label">Availability Title:</label>
                                     <input type="text" id="edit_title" name="title" class="input-text" required><br>
                                     <label class="form-label">Max patients:</label>

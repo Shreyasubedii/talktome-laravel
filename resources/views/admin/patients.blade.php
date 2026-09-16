@@ -4,9 +4,21 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<style>
+.password-field-wrapper { position: relative; display: block; }
+.password-field-wrapper .input-text { padding-right: 38px; }
+.password-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: #9ca3af; cursor: pointer; font-size: 15px; padding: 2px; }
+</style>
 @endsection
 
 @section('content')
+<script>
+function toggleAdminPatientPassword(id, button) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    button.setAttribute('aria-label', input.type === 'password' ? 'Show password' : 'Hide password');
+}
+</script>
 <div class="container">
     <div class="menu">
         <table class="menu-container" border="0">
@@ -219,6 +231,7 @@
 <script>
 function openAdminPatientEdit(id, name, email, tel, dob, nic) {
     document.getElementById('editPatientForm').action = '/admin/patients/' + id;
+    document.getElementById('edit_patient_id').value = id;
     document.getElementById('edit_patient_name').value = name;
     document.getElementById('edit_patient_email').value = email;
     document.getElementById('edit_patient_tel').value = tel;
@@ -226,6 +239,13 @@ function openAdminPatientEdit(id, name, email, tel, dob, nic) {
     document.getElementById('edit_patient_nic').value = nic;
     document.getElementById('edit-patient-popup').style.display = 'block';
 }
+
+@if($errors->any() && old('edit_patient_id'))
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('editPatientForm').action = '/admin/patients/{{ old('edit_patient_id') }}';
+    document.getElementById('edit-patient-popup').style.display = 'block';
+});
+@endif
 
 function openAdminPatientView(name, email, tel, dob, nic) {
     document.getElementById('view_patient_name').textContent = name;
@@ -249,16 +269,27 @@ function openAdminPatientView(name, email, tel, dob, nic) {
                             <form id="editPatientForm" method="POST">
                                 @csrf
                                 @method('PUT')
+                                <input type="hidden" id="edit_patient_id" name="edit_patient_id">
+                                @php($errorStyle = 'display:block;color:#dc2626;font-size:12px;margin-top:4px;')
                                 <label class="form-label">Name:</label>
-                                <input type="text" id="edit_patient_name" name="name" class="input-text" required><br>
+                                <input type="text" id="edit_patient_name" name="name" class="input-text" value="{{ old('name') }}" required><br>
+                                @error('name')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">Email:</label>
-                                <input type="email" id="edit_patient_email" name="email" class="input-text" required><br>
+                                <input type="email" id="edit_patient_email" name="email" class="input-text" value="{{ old('email') }}" required><br>
+                                @error('email')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">Telephone:</label>
-                                <input type="tel" id="edit_patient_tel" name="tel" class="input-text" required><br>
+                                <input type="tel" id="edit_patient_tel" name="tel" class="input-text" value="{{ old('tel') }}" required><br>
+                                @error('tel')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">Date of Birth:</label>
-                                <input type="date" id="edit_patient_dob" name="dob" class="input-text" required><br>
+                                <input type="date" id="edit_patient_dob" name="dob" class="input-text" value="{{ old('dob') }}" required><br>
+                                @error('dob')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">NID:</label>
-                                <input type="text" id="edit_patient_nic" name="nic" class="input-text" required><br>
+                                <input type="text" id="edit_patient_nic" name="nic" class="input-text" value="{{ old('nic') }}" required><br>
+                                <label class="form-label">New Password (optional):</label>
+                                <span class="password-field-wrapper"><input type="password" id="edit_patient_password" name="password" class="input-text" placeholder="New Password"><button type="button" class="password-toggle" onclick="toggleAdminPatientPassword('edit_patient_password', this)" aria-label="Show password">&#128065;</button></span><br>
+                                @error('password')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
+                                <span class="password-field-wrapper"><input type="password" id="edit_patient_password_confirmation" name="password_confirmation" class="input-text" placeholder="Confirm New Password"><button type="button" class="password-toggle" onclick="toggleAdminPatientPassword('edit_patient_password_confirmation', this)" aria-label="Show password">&#128065;</button></span><br>
+                                @error('password_confirmation')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <input type="submit" value="Save Changes" class="login-btn btn-primary btn" style="margin-top:10px;">
                             </form>
                         </td></tr>

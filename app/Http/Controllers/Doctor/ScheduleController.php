@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Doctor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Models\Schedule;
+use App\Services\ScheduleUpdateService;
 
 class ScheduleController extends Controller
 {
@@ -73,7 +73,7 @@ class ScheduleController extends Controller
         return redirect()->route('doctor.schedules')->with('success', '30-minute availability slots created successfully.');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, ScheduleUpdateService $scheduleUpdateService)
     {
         $doctor = Auth::guard('doctor')->user();
         $schedule = Schedule::where('docid', $doctor->docid)->findOrFail($id);
@@ -86,47 +86,17 @@ class ScheduleController extends Controller
             'nop' => 'required|integer|min:1',
         ]);
 
-        $startTime = $request->input('start_time');
-        $endTime = $request->input('end_time');
-        $date = $request->input('date');
+        $error = $scheduleUpdateService->update($schedule, [
+            'title' => $request->title,
+            'date' => $request->date,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'nop' => (int) $request->nop,
+        ]);
 
-        if ($schedule->appointments()->exists()) {
-            return back()->with('error', 'Booked availability slots cannot be edited.');
+        if ($error) {
+            return back()->with('error', $error);
         }
-
-        $overlappingSchedules = Schedule::where('docid', $doctor->docid)
-            ->where('scheduleid', '!=', $schedule->scheduleid)
-            ->where('scheduledate', $date)
-            ->where('start_time', '<', $endTime)
-            ->where('end_time', '>', $startTime)
-            ->get();
-
-        $bookedOverlap = $overlappingSchedules->first(function ($overlappingSchedule) {
-            return $overlappingSchedule->appointments()->exists();
-        });
-
-        if ($bookedOverlap) {
-            return back()->with('error', 'This time overlaps with a booked availability slot.');
-        }
-
-        DB::transaction(function () use ($schedule, $overlappingSchedules, $request, $date, $startTime, $endTime) {
-            $overlappingSchedules->each->delete();
-
-            $bookedCount = $schedule->appointments()->count();
-            $remainingCapacity = max($request->nop - $bookedCount, 0);
-
-            $schedule->update([
-                'title' => $request->title,
-                'scheduledate' => $date,
-                'scheduletime' => $startTime,
-                'start_time' => $startTime,
-                'end_time' => $endTime,
-                'nop' => $request->nop,
-                'remaining_capacity' => $remainingCapacity,
-                'status' => $remainingCapacity > 0 ? 'available' : 'full',
-                'is_full' => $remainingCapacity < 1,
-            ]);
-        });
 
         return redirect()->route('doctor.schedules')->with('success', 'Availability updated successfully.');
     }

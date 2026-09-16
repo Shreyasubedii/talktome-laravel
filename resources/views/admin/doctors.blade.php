@@ -15,10 +15,21 @@
 .required-mark {
     color: #dc2626;
 }
+
+.password-field-wrapper { position: relative; display: block; }
+.password-field-wrapper .input-text { padding-right: 38px; }
+.password-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: #9ca3af; cursor: pointer; font-size: 15px; padding: 2px; }
 </style>
 @endsection
 
 @section('content')
+<script>
+function toggleAdminDoctorPassword(id, button) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+    button.setAttribute('aria-label', input.type === 'password' ? 'Show password' : 'Hide password');
+}
+</script>
 <div class="container">
     <div class="menu">
         <table class="menu-container" border="0">
@@ -333,6 +344,7 @@
 <script>
 function openAdminDoctorEdit(id, name, email, tel, nic, specialty) {
     document.getElementById('editDoctorForm').action = '/admin/doctors/' + id;
+    document.getElementById('edit_doctor_id').value = id;
     document.getElementById('edit_doctor_name').value = name;
     document.getElementById('edit_doctor_email').value = email;
     document.getElementById('edit_doctor_tel').value = tel;
@@ -340,6 +352,13 @@ function openAdminDoctorEdit(id, name, email, tel, nic, specialty) {
     document.getElementById('edit_doctor_specialty').value = specialty;
     document.getElementById('edit-doctor-popup').style.display = 'block';
 }
+
+@if($errors->any() && old('edit_doctor_id'))
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('editDoctorForm').action = '/admin/doctors/{{ old('edit_doctor_id') }}';
+    document.getElementById('edit-doctor-popup').style.display = 'block';
+});
+@endif
 
 function openAdminDoctorView(name, email, tel, nic, specialty) {
     document.getElementById('view_doctor_name').textContent = name;
@@ -367,20 +386,30 @@ document.getElementById('add-popup').style.display = 'block';
                             <form id="editDoctorForm" method="POST">
                                 @csrf
                                 @method('PUT')
+                                <input type="hidden" id="edit_doctor_id" name="edit_doctor_id">
+                                @php($errorStyle = 'display:block;color:#dc2626;font-size:12px;margin-top:4px;')
                                 <label class="form-label">Name:</label>
-                                <input type="text" id="edit_doctor_name" name="name" class="input-text" required><br>
+                                <input type="text" id="edit_doctor_name" name="name" class="input-text" value="{{ old('name') }}" required><br>
+                                @error('name')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">Email:</label>
-                                <input type="email" id="edit_doctor_email" name="email" class="input-text" required><br>
+                                <input type="email" id="edit_doctor_email" name="email" class="input-text" value="{{ old('email') }}" required><br>
+                                @error('email')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">Telephone:</label>
-                                <input type="tel" id="edit_doctor_tel" name="tel" class="input-text" required><br>
+                                <input type="tel" id="edit_doctor_tel" name="tel" class="input-text" value="{{ old('tel') }}" required><br>
+                                @error('tel')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <label class="form-label">NID:</label>
                                 <input type="text" id="edit_doctor_nic" name="nic" class="input-text" required><br>
                                 <label class="form-label">Specialty:</label>
                                 <select id="edit_doctor_specialty" name="specialty" class="box">
                                     @foreach($specialties as $specialty)
-                                    <option value="{{ $specialty->id }}">{{ $specialty->sname }}</option>
+                                    <option value="{{ $specialty->id }}" {{ (string) old('specialty') === (string) $specialty->id ? 'selected' : '' }}>{{ $specialty->sname }}</option>
                                     @endforeach
                                 </select><br>
+                                <label class="form-label">New Password (optional):</label>
+                                <span class="password-field-wrapper"><input type="password" id="edit_doctor_password" name="password" class="input-text" placeholder="New Password"><button type="button" class="password-toggle" onclick="toggleAdminDoctorPassword('edit_doctor_password', this)" aria-label="Show password">&#128065;</button></span><br>
+                                @error('password')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
+                                <span class="password-field-wrapper"><input type="password" id="edit_doctor_password_confirmation" name="password_confirmation" class="input-text" placeholder="Confirm New Password"><button type="button" class="password-toggle" onclick="toggleAdminDoctorPassword('edit_doctor_password_confirmation', this)" aria-label="Show password">&#128065;</button></span><br>
+                                @error('password_confirmation')<span style="{{ $errorStyle }}">{{ $message }}</span>@enderror
                                 <input type="submit" value="Save Changes" class="login-btn btn-primary btn" style="margin-top:10px;">
                             </form>
                         </td></tr>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
+use App\Services\ScheduleUpdateService;
 
 class ScheduleController extends Controller
 {
@@ -69,7 +70,7 @@ class ScheduleController extends Controller
         return back()->with('success', 'Availability slots added');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, ScheduleUpdateService $scheduleUpdateService)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -81,34 +82,19 @@ class ScheduleController extends Controller
 
         $schedule = Schedule::findOrFail($id);
 
-        $overlap = Schedule::where('docid', $schedule->docid)
-            ->where('scheduleid', '!=', $schedule->scheduleid)
-            ->where('scheduledate', $request->date)
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
-                    ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
-                    ->orWhere(function ($q) use ($request) {
-                        $q->where('start_time', '<=', $request->start_time)
-                            ->where('end_time', '>=', $request->end_time);
-                    });
-            })
-            ->exists();
-
-        if ($overlap) {
-            return back()->with('error', 'This time overlaps with another availability slot.');
-        }
-
-        $schedule->update([
+        $error = $scheduleUpdateService->update($schedule, [
             'title' => $request->title,
-            'scheduledate' => $request->date,
-            'scheduletime' => $request->start_time,
+            'date' => $request->date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
-            'nop' => $request->nop,
-            'remaining_capacity' => max($request->nop - $schedule->appointments()->count(), 0),
-            'status' => max($request->nop - $schedule->appointments()->count(), 0) > 0 ? 'available' : 'full',
-            'is_full' => max($request->nop - $schedule->appointments()->count(), 0) < 1,
+            'nop' => (int) $request->nop,
         ]);
+
+        if ($error) {
+            return back()
+                ->with('error', $error)
+                ->with('edit_schedule_id', $schedule->scheduleid);
+        }
 
         return back()->with('success', 'Availability updated');
     }

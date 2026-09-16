@@ -228,7 +228,7 @@
                                             @endif
                                             
                                     @if (session('error'))
-                                    <tr>
+                                    <tr id="error-row">
                                         <td colspan="5">
                                             <div style="margin: 8px 0; padding: 10px 12px; background: #fef2f2; color: #b91c1c; border-radius: 8px; font-size: 14px;">
                                                 {{ session('error') }}
@@ -627,6 +627,19 @@ window.addEventListener('load', function () {
                 row.remove();
             }, 500);
         }, 3000); // 3 seconds
+    }
+
+    const errorRow = document.getElementById('error-row');
+
+    if (errorRow) {
+        setTimeout(function () {
+            errorRow.style.transition = 'opacity 0.5s ease';
+            errorRow.style.opacity = '0';
+
+            setTimeout(function () {
+                errorRow.remove();
+            }, 500);
+        }, 4000);
     }
 });
 </script>
