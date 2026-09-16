@@ -14,9 +14,10 @@ class ScheduleController extends Controller
     {
         $search = $request->search;
         $date = $request->scheduledate;
+        $tomorrow = now()->addDay()->toDateString();
         
         $query = Schedule::with('doctor.specialty', 'appointments')
-            ->where('scheduledate', '>=', now()->toDateString());
+            ->where('scheduledate', '>=', $tomorrow);
             
         if ($search) {
             $query->where(function($q) use ($search) {

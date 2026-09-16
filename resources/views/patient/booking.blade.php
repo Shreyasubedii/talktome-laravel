@@ -202,8 +202,9 @@
                                         </tr>
                                         <tr>
                                             <td style="padding-top: 20px;">
-                                                <input type="submit" value="Book Now" class="login-btn btn-primary btn"
+                                                <input type="submit" id="bookNowButton" value="Book Now" class="login-btn btn-primary btn"
                                                     style="width: 100%; border-radius: 10px;">
+                                                <span id="noSessionsMessage" style="display:none;"></span>
                                             </td>
                                         </tr>
                                     </form>
@@ -251,12 +252,21 @@ function selectBookingDate(date) {
     });
 
     const target = document.getElementById('slots-' + date);
+    const bookNowButton = document.getElementById('bookNowButton');
+    const noSessionsMessage = document.getElementById('noSessionsMessage');
     if (target) {
         target.style.display = 'block';
         const firstChoice = target.querySelector('input[type="radio"]');
         if (firstChoice) {
             firstChoice.checked = true;
         }
+    }
+
+    if (bookNowButton) {
+        bookNowButton.style.display = target ? 'block' : 'none';
+    }
+    if (noSessionsMessage) {
+        noSessionsMessage.style.display = target ? 'none' : 'inline';
     }
 
     const label = document.getElementById('selectedSlotDateLabel');

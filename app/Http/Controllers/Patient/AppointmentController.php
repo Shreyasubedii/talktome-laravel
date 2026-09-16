@@ -14,6 +14,9 @@ class AppointmentController extends Controller
     {
         $patient = Auth::guard('patient')->user();
         $appointments = Appointment::where('pid', $patient->pid)
+            ->whereHas('schedule', function ($query) {
+                $query->where('scheduledate', '>=', now()->addDay()->toDateString());
+            })
             ->with(['schedule.doctor', 'payment'])
             ->get();
         $today = date('Y-m-d');

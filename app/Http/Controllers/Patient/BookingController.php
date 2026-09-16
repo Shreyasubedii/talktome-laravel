@@ -14,8 +14,9 @@ class BookingController extends Controller
     public function index($doctorId)
     {
         $doctor = Doctor::with('specialty')->findOrFail($doctorId);
+        $tomorrow = now()->addDay()->toDateString();
         $schedules = Schedule::where('docid', $doctorId)
-            ->where('scheduledate', '>=', now()->toDateString())
+            ->where('scheduledate', '>=', $tomorrow)
             ->where('status', 'available')
             ->where('is_full', false)
             ->orderBy('scheduledate')
@@ -47,14 +48,16 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'schedule' => 'required|exists:schedule,scheduleid'
+            'schedule' => 'required|exists:schedule,scheduleid',
+            'selected_date' => 'required|date',
         ]);
 
         $patient = Auth::guard('patient')->user();
         $schedule = Schedule::findOrFail($request->schedule);
 
-        if ($schedule->scheduledate->lt(now()->toDateString())) {
-            return back()->with('error', 'This availability slot is in the past.');
+        if (!$schedule->isBookable()
+            || $schedule->scheduledate->format('Y-m-d') !== $request->selected_date) {
+            return back()->with('error', 'This availability slot is no longer available.');
         }
 
         $existingBooking = Appointment::where('scheduleid', $schedule->scheduleid)
@@ -89,9 +92,14 @@ class BookingController extends Controller
     
     public function complete($id)
     {
-        $appointment = Appointment::with('schedule.doctor', 'patient')->findOrFail($id);
-        $today = date('Y-m-d');
         $patient = Auth::guard('patient')->user();
+        $appointment = Appointment::with('schedule.doctor', 'patient')
+            ->where('pid', $patient->pid)
+            ->whereHas('schedule', function ($query) {
+                $query->where('scheduledate', '>=', now()->addDay()->toDateString());
+            })
+            ->findOrFail($id);
+        $today = date('Y-m-d');
         
         return view('patient.booking-complete', compact('appointment', 'today', 'patient'));
     }

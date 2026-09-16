@@ -38,7 +38,7 @@ class Schedule extends Model
             return false;
         }
 
-        if ($this->scheduledate->lt(now()->toDateString())) {
+        if ($this->scheduledate->lte(now()->toDateString())) {
             return false;
         }
 

@@ -11,6 +11,13 @@ use App\Models\History;
 
 class RecommendationController extends Controller
 {
+    private function tokenize(string $text): array
+    {
+        return array_values(array_unique(array_filter(
+            preg_split('/[^a-z0-9]+/i', strtolower($text))
+        )));
+    }
+
     /**
      * Calculate IDF values for all keywords.
      */
@@ -21,11 +28,7 @@ class RecommendationController extends Controller
 
         foreach ($specialties as $specialty) {
 
-            $keywords = array_unique(
-                array_filter(
-                    array_map('trim', explode(',', strtolower($specialty->keywords)))
-                )
-            );
+            $keywords = $this->tokenize((string) $specialty->keywords);
 
             foreach ($keywords as $word) {
                 $df[$word] = ($df[$word] ?? 0) + 1;
@@ -102,11 +105,7 @@ class RecommendationController extends Controller
         }
 
         // Patient input words
-        $problemWords = array_unique(
-            array_filter(
-                preg_split('/\s+/', strtolower($problem))
-            )
-        );
+        $problemWords = $this->tokenize($problem);
 
         // Get all specialties
         $allSpecialties = Specialty::all();
@@ -120,11 +119,7 @@ class RecommendationController extends Controller
         // Calculate similarity for every specialty
         $specialties = $allSpecialties->map(function ($specialty) use ($patientVector, $idf) {
 
-            $keywords = array_unique(
-                array_filter(
-                    array_map('trim', explode(',', strtolower($specialty->keywords)))
-                )
-            );
+            $keywords = $this->tokenize((string) $specialty->keywords);
 
             $specialtyVector = $this->buildTFIDFVector($keywords, $idf);
 
@@ -163,7 +158,12 @@ class RecommendationController extends Controller
         $specialtyIds = $specialties->pluck('id');
 
         $doctors = Doctor::whereIn('specialties', $specialtyIds)
-            ->with('specialty')
+            ->with(['specialty', 'schedules' => function ($query) {
+                $query->where('scheduledate', '>=', now()->addDay()->toDateString())
+                    ->where('status', 'available')
+                    ->where('is_full', false)
+                    ->where('remaining_capacity', '>', 0);
+            }])
             ->get();
 
         History::create([

@@ -38,7 +38,7 @@ class ScheduleController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'date' => 'required|date|after_or_equal:today',
+            'date' => 'required|date|after:today',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'nop' => 'required|integer|min:1',
@@ -80,7 +80,7 @@ class ScheduleController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'date' => 'required|date|after_or_equal:today',
+            'date' => 'required|date|after:today',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'nop' => 'required|integer|min:1',

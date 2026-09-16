@@ -219,7 +219,7 @@
                                 <tbody>
                                     @forelse($doctors as $doc)
                                     <tr>
-                                        <td> &nbsp;{{ Str::limit($doc->docname, 30) }}</td>
+                                        <td> &nbsp;{{'Dr. ' .Str::limit($doc->docname, 30) }}</td>
                                         <td>{{ Str::limit($doc->docemail, 20) }}</td>
                                         <td>{{ Str::limit($doc->specialty?->sname ?? 'General', 20) }}</td>
                                         <td>

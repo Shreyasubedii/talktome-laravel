@@ -4,6 +4,18 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/doctor.css') }}">
+<style>
+.error-text {
+    color: #dc2626;
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.required-mark {
+    color: #dc2626;
+}
+</style>
 @endsection
 
 @section('content')
@@ -106,7 +118,7 @@
                 <td>
                     <form action="{{ route('admin.doctors') }}" method="get" class="header-search">
                         <input type="search" name="search" class="input-text header-searchbar"
-                            placeholder="Search Doctor name or Email" list="doctors"
+                            placeholder="Search Doctor name or Specialty" list="doctors"
                             value="{{ request('search') }}">&nbsp;&nbsp;
                         <input type="Submit" value="Search" class="login-btn btn-primary btn"
                             style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
@@ -161,7 +173,7 @@
                                 <tbody>
                                     @forelse($doctors as $doctor)
                                     <tr>
-                                        <td> &nbsp;{{ Str::limit($doctor->docname, 30) }}</td>
+                                        <td> &nbsp;{{ 'Dr. ' .Str::limit($doctor->docname, 30) }}</td>
                                         <td>{{ Str::limit($doctor->docemail, 20) }}</td>
                                         <td>{{ Str::limit($doctor->specialty?->sname, 20) }}</td>
                                         <td>
@@ -229,36 +241,40 @@
                         <tr>
                             <form action="{{ route('admin.doctors.store') }}" method="POST">
                                 @csrf
+                                <input type="hidden" name="form_context" value="add_doctor">
                                 <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Name: </label>
+                                    <label for="name" class="form-label">Name: <span class="required-mark">*</span></label>
                                 </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
                                 <input type="text" name="name" class="input-text" placeholder="Therapists Name"
-                                    required><br>
+                                    value="{{ old('name') }}" required><br>
+                                @error('name')<span class="error-text">{{ $message }}</span>@enderror
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="Email" class="form-label">Email: </label>
+                                <label for="Email" class="form-label">Email: <span class="required-mark">*</span></label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
                                 <input type="email" name="email" class="input-text" placeholder="Email Address"
-                                    required><br>
+                                    value="{{ old('email') }}" required><br>
+                                @error('email')<span class="error-text">{{ $message }}</span>@enderror
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="Tele" class="form-label">Telephone: </label>
+                                <label for="Tele" class="form-label">Telephone: <span class="required-mark">*</span></label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
                                 <input type="tel" name="tel" class="input-text" placeholder="Telephone Number"
-                                    required><br>
+                                    value="{{ old('tel') }}" required><br>
+                                @error('tel')<span class="error-text">{{ $message }}</span>@enderror
                             </td>
                         </tr>
                         <tr>
@@ -268,32 +284,35 @@
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <input type="text" name="nic" class="input-text" placeholder="NID Number" required><br>
+                                <input type="text" name="nic" class="input-text" placeholder="NID Number" value="{{ old('nic') }}"><br>
+                                @error('nic')<span class="error-text">{{ $message }}</span>@enderror
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="specialty" class="form-label">Choose specialties: </label>
+                                <label for="specialty" class="form-label">Choose specialties: <span class="required-mark">*</span></label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
                                 <select name="specialty" class="box">
                                     @foreach($specialties as $specialty)
-                                    <option value="{{ $specialty->id }}">{{ $specialty->sname }}</option>
+                                    <option value="{{ $specialty->id }}" {{ (string) old('specialty') === (string) $specialty->id ? 'selected' : '' }}>{{ $specialty->sname }}</option>
                                     @endforeach
                                 </select><br>
+                                @error('specialty')<span class="error-text">{{ $message }}</span>@enderror
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
-                                <label for="password" class="form-label">Password: </label>
+                                <label for="password" class="form-label">Password: <span class="required-mark">*</span></label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" colspan="2">
                                 <input type="password" name="password" class="input-text"
                                     placeholder="Define a Password" required><br>
+                                @error('password')<span class="error-text">{{ $message }}</span>@enderror
                             </td>
                         </tr>
                         <tr>
@@ -330,6 +349,10 @@ function openAdminDoctorView(name, email, tel, nic, specialty) {
     document.getElementById('view_doctor_specialty').textContent = specialty;
     document.getElementById('view-doctor-popup').style.display = 'block';
 }
+
+@if($errors->any() && old('form_context') === 'add_doctor')
+document.getElementById('add-popup').style.display = 'block';
+@endif
 </script>
 
 <div id="edit-doctor-popup" class="overlay" style="display: none;">
